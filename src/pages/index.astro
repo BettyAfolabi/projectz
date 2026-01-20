@@ -1,16 +1,43 @@
 ---
-import '../styles/global.css';
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+
+import BentoGrid from '../components/layout/BentoGrid.astro';
+import ProjectCard from '../components/ui/ProjectCard.astro';
+
+import '../styles/globals.css';
+
+const projects: CollectionEntry<'projects'>[] =
+  await getCollection('projects');
+
+const sorted = [...projects].sort(
+  (a, b) => Number(b.data.featured) - Number(a.data.featured)
+);
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Project Zero</title>
+  </head>
+
+  <body>
+    <main class="mx-auto max-w-7xl px-6 py-16">
+      <h1 class="mb-10 text-4xl font-bold tracking-tight">
+        Selected Work
+      </h1>
+
+      <BentoGrid projects={sorted}>
+        {sorted.map((project) => (
+          <ProjectCard
+            slot={project.slug}
+            project={project}
+          />
+        ))}
+      </BentoGrid>
+    </main>
+  </body>
 </html>
