@@ -6,26 +6,27 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title, description, tags } = project.data;
+
+const isFeatured = project.data.featured;
+
+const colSpan = isFeatured
+  ? 'col-span-12 md:col-span-8'
+  : 'col-span-12 md:col-span-4';
+
+const transitionName = `project-${project.slug}`;
 ---
 
-<article class="flex h-full flex-col justify-between">
-  <header class="space-y-2">
-    <h3 class="text-xl font-semibold tracking-tight">
-      {title}
-    </h3>
-    <p class="text-sm text-neutral-600">
-      {description}
-    </p>
-  </header>
+<a
+  href={`/projects/${project.slug}`}
+  class={`group relative block overflow-hidden rounded-2xl border bg-background p-6 transition
+    ${colSpan}`}
+  style={`view-transition-name: ${transitionName};`}
+>
+  <h2 class="text-xl font-semibold tracking-tight">
+    {project.data.title}
+  </h2>
 
-  {tags && (
-    <ul class="mt-4 flex flex-wrap gap-2">
-      {tags.map((tag: unknown) => (
-        <li class="rounded-full bg-neutral-200 px-3 py-1 text-xs">
-          {tag}
-        </li>
-      ))}
-    </ul>
-  )}
-</article>
+  <p class="mt-2 text-sm text-muted-foreground">
+    {project.data.description}
+  </p>
+</a>

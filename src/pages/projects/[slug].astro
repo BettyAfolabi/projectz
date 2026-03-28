@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props as {
+  project: CollectionEntry<'projects'>;
+};
+
+const transitionName = `project-${project.slug}`;
+---
+
+<article
+  class="mx-auto max-w-4xl px-6 py-20"
+  style={`view-transition-name: ${transitionName};`}
+>
+  <h1 class="text-4xl font-bold tracking-tight">
+    {project.data.title}
+  </h1>
+
+  <p class="mt-4 text-lg text-muted-foreground">
+    {project.data.description}
+  </p>
+
+  <div class="prose mt-10">
+    <slot />
+  </div>
+</article>

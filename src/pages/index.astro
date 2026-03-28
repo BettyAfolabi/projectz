@@ -1,11 +1,11 @@
 ---
+import CommandPalette from '../components/islands/CommandPalette';
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
 
 import BentoGrid from '../components/layout/BentoGrid.astro';
 import ProjectCard from '../components/ui/ProjectCard.astro';
-
-import '../styles/globals.css';
+import '../styles/global.css';
 
 const projects: CollectionEntry<'projects'>[] =
   await getCollection('projects');
@@ -18,9 +18,7 @@ const sorted = [...projects].sort(
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
     <title>Project Zero</title>
   </head>
 
@@ -30,14 +28,19 @@ const sorted = [...projects].sort(
         Selected Work
       </h1>
 
-      <BentoGrid projects={sorted}>
+      <BentoGrid>
         {sorted.map((project) => (
-          <ProjectCard
-            slot={project.slug}
-            project={project}
-          />
+          <ProjectCard project={project} />
         ))}
       </BentoGrid>
     </main>
+
+    <CommandPalette
+      client:load
+      items={sorted.map((project) => ({
+        label: project.data.title,
+        href: `/projects/${project.slug}`,
+      }))}
+    />
   </body>
 </html>
