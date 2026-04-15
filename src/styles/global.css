@@ -1,1 +1,151 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────
+   1. THEME TOKENS
+───────────────────────────────────────────── */
+:root {
+  --theme-bg:           #080808;
+  --theme-surface:      rgba(255,255,255,0.03);
+  --theme-border:       rgba(255,255,255,0.08);
+  --theme-accent:       #7c3aed;
+  --theme-accent-hover: #8b5cf6;
+  --theme-text:         #ffffff;
+  --theme-muted:        rgba(255,255,255,0.5);
+  --theme-nav-text:     rgba(255,255,255,0.8);
+  --theme-glow:         rgba(120,80,255,0.15);
+}
+
+/* ─────────────────────────────────────────────
+   2. BASE LAYOUT
+───────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
+}
+
+/* Background glow */
+.theme-glow {
+  background: radial-gradient(
+    ellipse 80% 50% at 50% -20%,
+    var(--theme-glow),
+    transparent
+  );
+}
+
+/* ─────────────────────────────────────────────
+   3. GSAP INITIAL STATE (no flash)
+───────────────────────────────────────────── */
+.gsap-section,
+.gsap-item {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* ─────────────────────────────────────────────
+   4. REMOVE GLOBAL TRANSITION CONFLICTS
+   (IMPORTANT: no global "all" transitions)
+───────────────────────────────────────────── */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
+
+/* Only opt-in transitions */
+.transition-transform {
+  transition-property: transform;
+}
+
+/* ─────────────────────────────────────────────
+   5. VIEW TRANSITIONS (CORE SYSTEM)
+───────────────────────────────────────────── */
+
+/* Smooth page fade */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: root-fade 0.35s ease;
+}
+
+@keyframes root-fade {
+  from {
+    opacity: 0.85;
+    transform: translateY(6px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Shared element morph tuning */
+::view-transition-group(*) {
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation-duration: 0.55s;
+}
+
+/* ─────────────────────────────────────────────
+   6. PROJECT CARD ANIMATION (GSAP INSIDE PAGE ONLY)
+───────────────────────────────────────────── */
+.project-content {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: contentIn 0.4s ease 0.25s forwards;
+}
+
+@keyframes contentIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   7. OPTIONAL: REDUCED MOTION SAFETY
+───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+
+  .gsap-section,
+  .gsap-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   REVEAL SYSTEM (sections + items)
+───────────────────────────────────────────── */
+
+.reveal-section,
+.reveal-item {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* When visible */
+.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger effect for children */
+.reveal-item {
+  transition-delay: calc(var(--r-index, 0) * 40ms);
+}

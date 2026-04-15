@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <div class="mx-auto max-w-7xl px-6 pt-10 pb-32">
+
+    <a href="/" class="inline-flex items-center gap-2 text-sm font-mono mb-10 group transition-colors"
+      style="color:var(--theme-muted);"
+      onmouseover="this.style.color='var(--theme-text)'"
+      onmouseout="this.style.color='var(--theme-muted)'">
+      <span class="group-hover:-translate-x-0.5 transition-transform inline-block">←</span>
+      Back home
+    </a>
+
+    <div class="mb-12">
+      <p class="text-xs font-mono tracking-[0.2em] uppercase mb-3"
+        style="color:var(--theme-accent);opacity:0.8;">Writing</p>
+      <h1 class="text-4xl sm:text-5xl font-black tracking-tighter mb-4"
+        style="font-family:'Georgia',serif;color:var(--theme-text);">
+        What I'm writing about
+      </h1>
+      <p class="text-base max-w-xl leading-relaxed" style="color:var(--theme-muted);">
+        Documenting my tech journey — frontend deep-dives, lessons learned, and things I find interesting.
+      </p>
+    </div>
+
+    <!-- Skeleton grid shown immediately, replaced by real cards -->
+    <div id="blog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({length: 6}).map((_, i) => (
+        <div class="blog-skeleton rounded-2xl overflow-hidden"
+          style={`border:1px solid var(--theme-border);background:var(--theme-surface);animation-delay:${i * 80}ms`}>
+          <div class="skeleton-shimmer" style="aspect-ratio:16/9;"></div>
+          <div style="padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem;">
+            <div class="skeleton-shimmer" style="height:10px;border-radius:4px;width:28%;"></div>
+            <div class="skeleton-shimmer" style="height:16px;border-radius:4px;width:88%;"></div>
+            <div class="skeleton-shimmer" style="height:12px;border-radius:4px;width:72%;"></div>
+            <div class="skeleton-shimmer" style="height:12px;border-radius:4px;width:58%;"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-12 text-center">
+      <a href="https://medium.com/@devduchess" target="_blank" rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-all"
+        style="border:1px solid var(--theme-border);color:var(--theme-text);"
+        onmouseover="this.style.borderColor='var(--theme-accent)';this.style.color='var(--theme-accent)'"
+        onmouseout="this.style.borderColor='var(--theme-border)';this.style.color='var(--theme-text)'">
+        View all on Medium ↗
+      </a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  @keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position:  400px 0; }
+  }
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--theme-border) 25%,
+      color-mix(in srgb, var(--theme-border) 60%, var(--theme-surface)) 50%,
+      var(--theme-border) 75%
+    );
+    background-size: 800px 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+</style>
+
+<script>
+  const MEDIUM_USER  = 'devduchess';
+  const FALLBACK_IMG = 'https://miro.medium.com/v2/resize:fit:1200/format:webp/1*fWmtnvsF2HV6AQSMQNirqg.jpeg';
+
+  async function tryRss2json() {
+    const url  = `https://api.rss2json.com/v1/api.json?count=20&rss_url=https://medium.com/feed/@${MEDIUM_USER}`;
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error(`rss2json ${res.status}`);
+    const data = await res.json();
+    console.log('[blog] rss2json:', data.status, data.items?.length ?? 0);
+    if (data.status === 'ok' && data.items?.length) return data.items as any[];
+    throw new Error(data.message ?? data.status);
+  }
+
+  async function tryAllOrigins() {
+    const feed  = `https://medium.com/feed/@${MEDIUM_USER}`;
+    const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(feed)}`;
+    const res   = await fetch(proxy);
+    const env   = await res.json();
+    const xml   = env.contents;
+    if (!xml) throw new Error('empty');
+    const doc   = new DOMParser().parseFromString(xml, 'text/xml');
+    const nodes = Array.from(doc.querySelectorAll('item'));
+    console.log('[blog] allorigins items:', nodes.length);
+    if (!nodes.length) throw new Error('no items');
+    return nodes.map((item) => {
+      const get  = (tag: string) => item.querySelector(tag)?.textContent?.trim() ?? '';
+      const body = get('encoded') || get('description');
+      const imgM = body.match(/<img[^>]+src=["']([^"']+)["']/);
+      return { title: get('title'), link: get('link') || get('guid'), pubDate: get('pubDate'), thumbnail: imgM?.[1] ?? FALLBACK_IMG, description: body };
+    });
+  }
+
+  function snip(html: string) {
+    return (html ?? '').replace(/<[^>]*>/gm,'').replace(/\s+/g,' ').trim().slice(0,140)+'…';
+  }
+  function fmt(d: string) {
+    try { return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+    catch { return ''; }
+  }
+
+  function makeCard(post: any) {
+    const img  = post.thumbnail || FALLBACK_IMG;
+    const card = document.createElement('a');
+    card.href   = post.link;
+    card.target = '_blank';
+    card.rel    = 'noopener noreferrer';
+    card.style.cssText = 'display:flex;flex-direction:column;border-radius:1rem;overflow:hidden;border:1px solid var(--theme-border);background:var(--theme-surface);text-decoration:none;transition:border-color 0.25s,transform 0.25s;';
+    card.innerHTML = `
+      <div style="aspect-ratio:16/9;overflow:hidden;flex-shrink:0;">
+        <img src="${img}" alt="${post.title}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onerror="this.src='${FALLBACK_IMG}'" />
+      </div>
+      <div style="padding:1.25rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;flex:1;">
+        <span style="font-size:0.7rem;font-family:monospace;color:var(--theme-muted);opacity:0.5;">${fmt(post.pubDate)}</span>
+        <h2 style="font-size:1rem;font-weight:600;color:var(--theme-text);line-height:1.4;margin:0;">${post.title}</h2>
+        <p style="font-size:0.8125rem;color:var(--theme-muted);line-height:1.6;margin:0;flex:1;">${snip(post.description||post.content||'')}</p>
+        <span style="font-size:0.75rem;font-family:monospace;color:var(--theme-accent);margin-top:0.5rem;">Read on Medium ↗</span>
+      </div>`;
+    const imgEl = card.querySelector('img') as HTMLImageElement;
+    card.addEventListener('mouseenter',()=>{ card.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--theme-accent').trim(); card.style.transform='translateY(-2px)'; imgEl.style.transform='scale(1.04)'; });
+    card.addEventListener('mouseleave',()=>{ card.style.borderColor='var(--theme-border)'; card.style.transform='translateY(0)'; imgEl.style.transform='scale(1)'; });
+    return card;
+  }
+
+  (async () => {
+    const grid = document.getElementById('blog-grid');
+    if (!grid) return;
+
+    let posts: any[] | null = null;
+    try { posts = await tryRss2json(); } catch(e) { console.warn('[blog] rss2json failed:', e); }
+    if (!posts) {
+      try { posts = await tryAllOrigins(); } catch(e) { console.warn('[blog] allorigins failed:', e); }
+    }
+
+    grid.innerHTML = '';
+
+    if (!posts) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem 0;">
+        <p style="color:var(--theme-muted);font-family:monospace;font-size:0.875rem;margin:0 0 1rem;">Couldn't load posts right now.</p>
+        <a href="https://medium.com/@${MEDIUM_USER}" target="_blank" style="color:var(--theme-accent);font-family:monospace;text-decoration:none;">Read on Medium ↗</a>
+      </div>`;
+      return;
+    }
+
+    posts.forEach((p: any) => grid.appendChild(makeCard(p)));
+  })();
+</script>

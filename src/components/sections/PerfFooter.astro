@@ -1,0 +1,29 @@
+---
+const buildTime = new Date().toISOString();
+const buildLabel = new Date(buildTime).toLocaleDateString('en-GB', {
+  day: 'numeric', month: 'short', year: 'numeric',
+});
+---
+
+<footer class="mx-auto max-w-7xl px-6 pb-10 pt-8 flex flex-wrap items-center justify-between gap-4 text-xs font-mono"
+  style="border-top: 1px solid var(--theme-border); color: var(--theme-muted); opacity: 0.5;">
+  <span>© {new Date().getFullYear()} Elizabeth Afolabi</span>
+  <div class="flex items-center gap-6">
+    <span>Built <time datetime={buildTime}>{buildLabel}</time></span>
+    <a href="/lighthouse.html" target="_blank" rel="noopener noreferrer"
+      class="transition-opacity hover:opacity-100 underline underline-offset-2">
+      Lighthouse ↗
+    </a>
+  </div>
+  <span id="edge-region">Edge: —</span>
+</footer>
+
+<script>
+  fetch('/api/region')
+    .then((r) => r.json())
+    .then((d) => {
+      const el = document.getElementById('edge-region');
+      if (el && d.region) el.textContent = `Edge: ${d.region}`;
+    })
+    .catch(() => {});
+</script>

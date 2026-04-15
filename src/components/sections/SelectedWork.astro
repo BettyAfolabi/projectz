@@ -1,0 +1,108 @@
+---
+import ProjectCard from '../ui/ProjectCard.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+const sorted = [...projects].sort((a, b) => Number(b.data.featured) - Number(a.data.featured));
+const allTags = [...new Set(projects.flatMap((p) => p.data.tags ?? []))].sort();
+---
+
+<section id="work" class="mx-auto max-w-7xl px-6 pb-24 scroll-mt-20 reveal-section">
+  <div class="flex items-end justify-between mb-8 flex-wrap gap-4 reveal-item">
+    <div>
+      <p class="text-xs font-mono tracking-[0.2em] uppercase mb-2" style="color: var(--theme-accent); opacity: 0.8;">Portfolio</p>
+      <h2 class="text-3xl font-bold tracking-tight" style="color: var(--theme-text);">Selected Work</h2>
+    </div>
+
+    <!-- Tag filters desktop -->
+    <div class="hidden md:flex flex-wrap gap-2">
+      <button data-tag=""
+        class="tag-btn active text-xs font-medium px-3 py-1 rounded-full transition-all"
+        style="border: 1px solid var(--theme-border); color: var(--theme-muted);">
+        All
+      </button>
+      {allTags.map((tag) => (
+        <button data-tag={tag}
+          class="tag-btn text-xs font-medium px-3 py-1 rounded-full transition-all"
+          style="border: 1px solid var(--theme-border); color: var(--theme-muted);">
+          {tag}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Tag filters mobile -->
+  <div class="flex md:hidden gap-2 mb-6 overflow-x-auto pb-2 -mx-6 px-6 scrollbar-none reveal-item">
+    <button data-tag="" class="tag-btn active shrink-0 text-xs font-medium px-3 py-1 rounded-full transition-all"
+      style="border: 1px solid var(--theme-border); color: var(--theme-muted);">All</button>
+    {allTags.map((tag) => (
+      <button data-tag={tag} class="tag-btn shrink-0 text-xs font-medium px-3 py-1 rounded-full transition-all"
+        style="border: 1px solid var(--theme-border); color: var(--theme-muted);">{tag}</button>
+    ))}
+  </div>
+
+  <div id="project-grid" class="grid grid-cols-12 gap-4 auto-rows-[minmax(200px,auto)]">
+    {sorted.map((project) => (
+      <ProjectCard project={project} />
+    ))}
+  </div>
+</section>
+
+<script>
+  function getAccent() {
+    return getComputedStyle(document.documentElement).getPropertyValue('--theme-accent').trim();
+  }
+
+  function applyFilter(tag: string) {
+    document.querySelectorAll<HTMLElement>('.project-card').forEach((card) => {
+      const tags: string[] = JSON.parse(card.dataset.tags ?? '[]');
+      card.style.display = !tag || tags.includes(tag) ? '' : 'none';
+    });
+
+    const accent = getAccent();
+    document.querySelectorAll<HTMLElement>('.tag-btn').forEach((btn) => {
+      const isActive = btn.dataset.tag === tag;
+      btn.classList.toggle('active', isActive);
+      if (isActive) {
+        btn.style.borderColor = accent;
+        btn.style.color = accent;
+        btn.style.background = `color-mix(in srgb, ${accent} 10%, transparent)`;
+      } else {
+        btn.style.borderColor = 'var(--theme-border)';
+        btn.style.color = 'var(--theme-muted)';
+        btn.style.background = 'transparent';
+      }
+    });
+  }
+
+  const initial = new URLSearchParams(window.location.search).get('tag') ?? '';
+  applyFilter(initial);
+
+  document.querySelectorAll<HTMLElement>('.tag-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.tag ?? '';
+      const url = new URL(window.location.href);
+      tag ? url.searchParams.set('tag', tag) : url.searchParams.delete('tag');
+      window.history.pushState({}, '', url);
+      applyFilter(tag);
+    });
+  });
+
+  document.addEventListener('tag-filter', (e) => applyFilter((e as CustomEvent).detail));
+
+  // Re-apply active state styles when theme changes
+  document.addEventListener('theme-changed', () => {
+    const active = document.querySelector<HTMLElement>('.tag-btn.active');
+    const tag = active?.dataset.tag ?? '';
+    applyFilter(tag);
+  });
+</script>
+
+<style>
+  .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+</style>

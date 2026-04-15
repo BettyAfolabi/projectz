@@ -1,36 +1,241 @@
 ---
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../components/layout/BaseLayout.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
-
   return projects.map((project) => ({
     params: { slug: project.slug },
-    props: { project },
+    props:  { project },
   }));
 }
 
-const { project } = Astro.props as {
-  project: CollectionEntry<'projects'>;
-};
+const { project } = Astro.props as { project: CollectionEntry<'projects'> };
+const { Content }  = await project.render();
+
+const {
+  title,
+  description,
+  tags       = [],
+  stack      = [],
+  highlights = [],
+  metrics    = [],
+  coverImage,
+  liveUrl,
+  repoUrl,
+  role,
+  status,
+  year,
+} = project.data;
 
 const transitionName = `project-${project.slug}`;
+
+const statusStyles: Record<string, { bg: string; color: string }> = {
+  'Shipped':     { bg: 'rgba(52,211,153,0.15)',  color: 'rgb(52,211,153)'  },
+  'In Progress': { bg: 'rgba(251,191,36,0.15)',   color: 'rgb(251,191,36)'  },
+  'Archived':    { bg: 'rgba(148,163,184,0.12)',  color: 'rgb(148,163,184)' },
+};
+const s = status ? (statusStyles[status] ?? statusStyles['Archived']) : null;
 ---
 
-<article
-  class="mx-auto max-w-4xl px-6 py-20"
-  style={`view-transition-name: ${transitionName};`}
->
-  <h1 class="text-4xl font-bold tracking-tight">
-    {project.data.title}
-  </h1>
+<BaseLayout>
+  <div class="mx-auto max-w-5xl px-6 pt-10 pb-32">
 
-  <p class="mt-4 text-lg text-muted-foreground">
-    {project.data.description}
-  </p>
+    <!-- Back -->
+    <a href="/#work"
+      class="inline-flex items-center gap-2 text-sm font-mono mb-10 group transition-colors"
+      style="color: var(--theme-muted);"
+      onmouseover="this.style.color='var(--theme-text)'"
+      onmouseout="this.style.color='var(--theme-muted)'">
+      <span class="group-hover:-translate-x-0.5 transition-transform inline-block">←</span>
+      All projects
+    </a>
 
-  <div class="prose mt-10">
-    <slot />
+    <!-- Hero card -->
+    <div
+      class="rounded-2xl overflow-hidden mb-8"
+      style={`view-transition-name: ${transitionName}; border: 1px solid var(--theme-border); background: var(--theme-surface);`}
+    >
+      {coverImage && (
+        <div class="w-full h-56 md:h-72 overflow-hidden">
+          <img src={coverImage} alt={title} class="w-full h-full object-cover opacity-85" />
+        </div>
+      )}
+
+      <div class="p-8 md:p-10">
+        <!-- Meta row -->
+        <div class="flex flex-wrap items-center gap-3 mb-5 text-xs font-mono">
+          {s && status && (
+            <span class="px-2.5 py-1 rounded-full font-semibold"
+              style={`background: ${s.bg}; color: ${s.color};`}>
+              ● {status}
+            </span>
+          )}
+          {year && <span style="color: var(--theme-muted);">{year}</span>}
+          {role && <span style="color: var(--theme-muted);">· {role}</span>}
+        </div>
+
+        <h1 class="text-3xl md:text-5xl font-black tracking-tighter leading-tight mb-4"
+          style="color: var(--theme-text);">{title}</h1>
+
+        <p class="text-base md:text-lg leading-relaxed max-w-2xl mb-6"
+          style="color: var(--theme-muted);">{description}</p>
+
+        <!-- Tags -->
+        {tags.length > 0 && (
+          <div class="flex flex-wrap gap-2 mb-6">
+            {tags.map((tag) => (
+              <a href={`/?tag=${tag}`}
+                class="text-xs font-medium px-2.5 py-1 rounded-full transition-colors"
+                style="border: 1px solid var(--theme-border); color: var(--theme-muted);"
+                onmouseover="this.style.borderColor='var(--theme-accent)';this.style.color='var(--theme-accent)'"
+                onmouseout="this.style.borderColor='var(--theme-border)';this.style.color='var(--theme-muted)'">
+                {tag}
+              </a>
+            ))}
+          </div>
+        )}
+
+        <!-- Links -->
+        <div class="flex flex-wrap gap-3">
+          {liveUrl && (
+            <a href={liveUrl} target="_blank" rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all"
+              style="background: var(--theme-accent); color: #fff;"
+              onmouseover="this.style.background='var(--theme-accent-hover)'"
+              onmouseout="this.style.background='var(--theme-accent)'">
+              Live demo ↗
+            </a>
+          )}
+          {repoUrl && (
+            <a href={repoUrl} target="_blank" rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all"
+              style="border: 1px solid var(--theme-border); color: var(--theme-muted);"
+              onmouseover="this.style.borderColor='var(--theme-accent)';this.style.color='var(--theme-text)'"
+              onmouseout="this.style.borderColor='var(--theme-border)';this.style.color='var(--theme-muted)'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.114 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+              </svg>
+              View code
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics bar -->
+    {metrics.length > 0 && (
+      <div class={`grid gap-3 mb-8 ${metrics.length === 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3'}`}>
+        {metrics.map(({ label, value, unit }) => (
+          <div class="rounded-xl p-4 text-center"
+            style="border: 1px solid var(--theme-border); background: var(--theme-surface);">
+            <div class="text-2xl font-black tracking-tighter" style="color: var(--theme-accent);">
+              {value}
+              {unit && <span class="text-sm font-normal ml-0.5" style="color: var(--theme-muted);">{unit}</span>}
+            </div>
+            <div class="text-[10px] font-mono mt-1 uppercase tracking-wider"
+              style="color: var(--theme-muted); opacity: 0.6;">{label}</div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    <!-- Content + sidebar -->
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_256px] gap-8 items-start">
+
+      <!-- MDX — Tailwind typography plugin handles all prose styling -->
+      <article class="
+        prose prose-lg max-w-none
+        prose-headings:font-black prose-headings:tracking-tight
+        prose-h2:text-[1.375rem] prose-h2:mt-10 prose-h2:mb-4
+        prose-h3:text-lg prose-h3:mt-8 prose-h3:mb-3
+        prose-p:leading-relaxed prose-p:mb-5
+        prose-a:no-underline prose-a:border-b prose-a:border-current prose-a:transition-colors
+        prose-strong:font-semibold
+        prose-code:text-sm prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:before:content-none prose-code:after:content-none
+        prose-pre:rounded-xl prose-pre:text-sm
+        prose-blockquote:not-italic prose-blockquote:border-l-2 prose-blockquote:rounded-r-lg prose-blockquote:py-1
+        prose-img:rounded-xl prose-img:border prose-img:w-full
+        prose-hr:my-10
+        prose-li:leading-relaxed
+        [--tw-prose-body:var(--theme-muted)]
+        [--tw-prose-headings:var(--theme-text)]
+        [--tw-prose-links:var(--theme-accent)]
+        [--tw-prose-bold:var(--theme-text)]
+        [--tw-prose-code:var(--theme-accent)]
+        [--tw-prose-pre-bg:var(--theme-surface)]
+        [--tw-prose-pre-code:var(--theme-text)]
+        [--tw-prose-quotes:var(--theme-muted)]
+        [--tw-prose-quote-borders:var(--theme-accent)]
+        [--tw-prose-hr:var(--theme-border)]
+        [--tw-prose-bullets:var(--theme-accent)]
+        [--tw-prose-counters:var(--theme-accent)]
+        [--tw-prose-captions:var(--theme-muted)]
+        [--tw-prose-th-borders:var(--theme-border)]
+        [--tw-prose-td-borders:var(--theme-border)]
+      ">
+        <Content />
+      </article>
+
+      <!-- Sidebar -->
+      <aside class="flex flex-col gap-4 lg:sticky lg:top-24">
+
+        {highlights.length > 0 && (
+          <div class="rounded-xl p-5"
+            style="border: 1px solid var(--theme-border); background: var(--theme-surface);">
+            <p class="text-[10px] font-mono uppercase tracking-[0.18em] mb-4"
+              style="color: var(--theme-muted); opacity: 0.5;">Engineering highlights</p>
+            <ul class="flex flex-col gap-3 list-none p-0 m-0">
+              {highlights.map((h) => (
+                <li class="flex gap-3 text-sm leading-relaxed" style="color: var(--theme-muted);">
+                  <span class="mt-1.75 w-1.5 h-1.5 rounded-full shrink-0"
+                    style="background: var(--theme-accent);"></span>
+                  {h}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {stack.length > 0 && (
+          <div class="rounded-xl p-5"
+            style="border: 1px solid var(--theme-border); background: var(--theme-surface);">
+            <p class="text-[10px] font-mono uppercase tracking-[0.18em] mb-4"
+              style="color: var(--theme-muted); opacity: 0.5;">Stack</p>
+            <ul class="flex flex-wrap gap-2 list-none p-0 m-0">
+              {stack.map((item) => (
+                <li class="text-xs px-2.5 py-1 rounded-lg"
+                  style="border: 1px solid var(--theme-border); color: var(--theme-muted);">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+      </aside>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-16 pt-8 flex justify-between items-center flex-wrap gap-4"
+      style="border-top: 1px solid var(--theme-border);">
+      <a href="/"
+        class="inline-flex items-center gap-2 text-sm font-mono group transition-colors"
+        style="color: var(--theme-muted);"
+        onmouseover="this.style.color='var(--theme-text)'"
+        onmouseout="this.style.color='var(--theme-muted)'">
+        <span class="group-hover:-translate-x-0.5 transition-transform inline-block">←</span>
+        All projects
+      </a>
+      <a href="mailto:betty4web@gmail.com"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all"
+        style="background: var(--theme-accent); color: #fff;"
+        onmouseover="this.style.background='var(--theme-accent-hover)'"
+        onmouseout="this.style.background='var(--theme-accent)'">
+        Work together →
+      </a>
+    </div>
+
   </div>
-</article>
+</BaseLayout>

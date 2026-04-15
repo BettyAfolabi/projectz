@@ -1,0 +1,226 @@
+---
+// ThemeSwitcher.astro
+// Fixed bottom-right FAB that expands upward with theme options
+---
+
+<!-- Fixed container -->
+<div id="theme-fab-wrap" style="
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+">
+
+  <!-- Theme option buttons (expand upward, hidden by default) -->
+  <div id="theme-options" style="
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  ">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- Main FAB trigger -->
+  <button
+    id="theme-fab"
+    aria-label="Switch theme"
+    title="Change theme"
+    style="
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid var(--theme-border);
+      background: color-mix(in srgb, var(--theme-bg) 80%, transparent);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+    "
+  >
+    <!-- Pulse ring -->
+    <span id="fab-pulse" style="
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1.5px solid var(--theme-accent);
+      opacity: 0.4;
+      animation: fab-ping 2.5s ease-in-out infinite;
+    "></span>
+
+    <!-- Palette icon -->
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+      style="color: var(--theme-accent); transition: color 0.2s;">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="8"  cy="10" r="1.5" fill="currentColor"/>
+      <circle cx="12" cy="8"  r="1.5" fill="currentColor"/>
+      <circle cx="16" cy="10" r="1.5" fill="currentColor"/>
+      <circle cx="16" cy="14" r="1.5" fill="currentColor"/>
+      <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+      <circle cx="8"  cy="14" r="1.5" fill="currentColor"/>
+    </svg>
+  </button>
+</div>
+
+<style>
+  @keyframes fab-ping {
+    0%, 100% { transform: scale(1);   opacity: 0.4; }
+    50%       { transform: scale(1.2); opacity: 0.1; }
+  }
+</style>
+
+<script>
+  import { THEMES } from '../../lib/themes';
+
+  // ── Apply theme ──────────────────────────────────────────────
+  function applyTheme(id: string) {
+    const t = THEMES.find((x) => x.id === id) ?? THEMES[0];
+    const r = document.documentElement;
+    r.setAttribute('data-theme', t.id);
+    r.style.setProperty('--theme-bg',           t.bg);
+    r.style.setProperty('--theme-surface',      t.surface);
+    r.style.setProperty('--theme-border',       t.border);
+    r.style.setProperty('--theme-accent',       t.accent);
+    r.style.setProperty('--theme-accent-hover', t.accentHover);
+    r.style.setProperty('--theme-text',         t.text);
+    r.style.setProperty('--theme-muted',        t.muted);
+    r.style.setProperty('--theme-nav-text',     t.navText);
+    r.style.setProperty('--theme-glow',         t.glow);
+    document.body.style.backgroundColor = t.bg;
+    document.body.style.color = t.text;
+    localStorage.setItem('portfolio-theme', t.id);
+
+    // Update active state on option buttons
+    document.querySelectorAll<HTMLElement>('.theme-opt-btn').forEach((btn) => {
+      const isActive = btn.dataset.themeId === t.id;
+      btn.style.transform = isActive ? 'scale(1.2)' : 'scale(1)';
+      btn.style.boxShadow = isActive ? `0 0 0 2.5px white, 0 0 0 4px ${t.accent}` : 'none';
+    });
+
+    document.dispatchEvent(new CustomEvent('theme-changed', { detail: t.id }));
+  }
+
+  // ── Build option buttons ─────────────────────────────────────
+  const optionsWrap = document.getElementById('theme-options')!;
+
+  // Render in reverse so Void is at bottom (closest to FAB)
+  [...THEMES].reverse().forEach((t) => {
+    const btn = document.createElement('button');
+    btn.className = 'theme-opt-btn';
+    btn.dataset.themeId = t.id;
+    btn.title = t.label;
+    btn.style.cssText = `
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, ${t.color}, ${t.dot});
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      flex-shrink: 0;
+    `;
+
+    // Tooltip label on hover
+    btn.addEventListener('mouseenter', () => {
+      if (btn.dataset.themeId !== document.documentElement.getAttribute('data-theme')) {
+        btn.style.transform = 'scale(1.15)';
+      }
+      showTooltip(btn, t.label);
+    });
+    btn.addEventListener('mouseleave', () => {
+      if (btn.dataset.themeId !== document.documentElement.getAttribute('data-theme')) {
+        btn.style.transform = 'scale(1)';
+      }
+      hideTooltip();
+    });
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      applyTheme(t.id);
+    });
+
+    optionsWrap.appendChild(btn);
+  });
+
+  // ── Tooltip ──────────────────────────────────────────────────
+  const tooltip = document.createElement('div');
+  tooltip.style.cssText = `
+    position: fixed;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    font-size: 11px;
+    font-family: monospace;
+    padding: 3px 8px;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s;
+    z-index: 100;
+    white-space: nowrap;
+  `;
+  document.body.appendChild(tooltip);
+
+  function showTooltip(el: HTMLElement, text: string) {
+    const r = el.getBoundingClientRect();
+    tooltip.textContent = text;
+    tooltip.style.top  = `${r.top + r.height / 2 - 10}px`;
+    tooltip.style.left = `${r.left - tooltip.offsetWidth - 8}px`;
+    tooltip.style.opacity = '1';
+  }
+  function hideTooltip() { tooltip.style.opacity = '0'; }
+
+  // ── FAB open / close ─────────────────────────────────────────
+  const fab     = document.getElementById('theme-fab')!;
+  const options = document.getElementById('theme-options')!;
+  let isOpen    = false;
+
+  function openMenu() {
+    isOpen = true;
+    options.style.opacity      = '1';
+    options.style.pointerEvents = 'auto';
+    options.style.transform    = 'translateY(0)';
+    fab.style.transform        = 'rotate(30deg) scale(1.05)';
+    // Pause the ping while open
+    document.getElementById('fab-pulse')!.style.animationPlayState = 'paused';
+  }
+
+  function closeMenu() {
+    isOpen = false;
+    options.style.opacity      = '0';
+    options.style.pointerEvents = 'none';
+    options.style.transform    = 'translateY(12px)';
+    fab.style.transform        = 'rotate(0deg) scale(1)';
+    document.getElementById('fab-pulse')!.style.animationPlayState = 'running';
+    hideTooltip();
+  }
+
+  fab.addEventListener('click', (e) => {
+    e.stopPropagation();
+    isOpen ? closeMenu() : openMenu();
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (isOpen && !document.getElementById('theme-fab-wrap')!.contains(e.target as Node)) {
+      closeMenu();
+    }
+  });
+
+  // ── Listen for external set-theme events (mobile row) ────────
+  document.addEventListener('set-theme', (e: Event) => {
+    applyTheme((e as CustomEvent).detail);
+  });
+
+  // ── Init ─────────────────────────────────────────────────────
+  applyTheme(localStorage.getItem('portfolio-theme') ?? 'void');
+</script>

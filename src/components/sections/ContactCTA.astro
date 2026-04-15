@@ -1,0 +1,44 @@
+---
+// ContactCTA.astro
+---
+
+<section id="contact" class="mx-auto max-w-7xl px-6 pb-32 scroll-mt-20 reveal-section">
+  <div class="rounded-3xl p-12 md:p-16 text-center reveal-item"
+    style="border: 1px solid var(--theme-border); background: color-mix(in srgb, var(--theme-accent) 6%, var(--theme-surface));">
+
+    <p class="text-xs font-mono tracking-[0.2em] uppercase mb-4" style="color: var(--theme-accent); opacity: 0.8;">
+      What's next?
+    </p>
+
+    <h2
+      class="text-[clamp(2rem,6vw,5rem)] font-black tracking-tighter leading-tight mb-6"
+      style="font-family: 'Georgia', serif; color: var(--theme-text);"
+    >
+      Let's build something<br />
+      <span id="contact-gradient" style="
+        background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-hover));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      ">
+        remarkable.
+      </span>
+    </h2>
+
+    <p class="max-w-md mx-auto mb-10 leading-relaxed" style="color: var(--theme-muted);">
+      Whether you have a project in mind, a role to fill, or just want to talk
+      frontend — my inbox is open.
+    </p>
+
+    <a
+      href="mailto:betty4web@gmail.com"
+      id="contact-cta-btn"
+      class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-white font-semibold transition-all duration-200 text-sm"
+      style="background: var(--theme-accent);"
+      onmouseover="this.style.background='var(--theme-accent-hover)'"
+      onmouseout="this.style.background='var(--theme-accent)'"
+    >
+      Say hello →
+    </a>
+  </div>
+</section>

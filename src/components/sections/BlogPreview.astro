@@ -1,0 +1,165 @@
+---
+// BlogPreview.astro — 2 posts preview, self-contained fetch
+---
+
+<section id="blog" class="mx-auto max-w-7xl px-6 pb-24 scroll-mt-20 reveal-section">
+  <div style="border-top: 1px solid var(--theme-border); padding-top: 4rem;">
+
+    <div class="flex items-end justify-between flex-wrap gap-4 mb-10 reveal-item">
+      <div>
+        <p class="text-xs font-mono tracking-[0.2em] uppercase mb-2"
+          style="color: var(--theme-accent); opacity: 0.8;">Writing</p>
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight"
+          style="color: var(--theme-text);">What I'm writing about</h2>
+      </div>
+      <a href="/blog" class="text-sm font-mono transition-colors"
+        style="color: var(--theme-muted);"
+        onmouseover="this.style.color='var(--theme-accent)'"
+        onmouseout="this.style.color='var(--theme-muted)'">
+        All posts ↗
+      </a>
+    </div>
+
+    <!-- Grid always exists — JS replaces skeletons with real cards -->
+    <div id="blog-preview-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6 reveal-item">
+      <!-- Skeleton 1 -->
+      <div class="blog-skeleton rounded-2xl overflow-hidden"
+        style="border:1px solid var(--theme-border); background:var(--theme-surface);">
+        <div class="skeleton-shimmer" style="aspect-ratio:16/9;"></div>
+        <div style="padding:1.25rem; display:flex; flex-direction:column; gap:0.75rem;">
+          <div class="skeleton-shimmer" style="height:10px; border-radius:4px; width:30%;"></div>
+          <div class="skeleton-shimmer" style="height:16px; border-radius:4px; width:85%;"></div>
+          <div class="skeleton-shimmer" style="height:12px; border-radius:4px; width:70%;"></div>
+          <div class="skeleton-shimmer" style="height:12px; border-radius:4px; width:55%;"></div>
+        </div>
+      </div>
+      <!-- Skeleton 2 -->
+      <div class="blog-skeleton rounded-2xl overflow-hidden"
+        style="border:1px solid var(--theme-border); background:var(--theme-surface);">
+        <div class="skeleton-shimmer" style="aspect-ratio:16/9;"></div>
+        <div style="padding:1.25rem; display:flex; flex-direction:column; gap:0.75rem;">
+          <div class="skeleton-shimmer" style="height:10px; border-radius:4px; width:25%;"></div>
+          <div class="skeleton-shimmer" style="height:16px; border-radius:4px; width:90%;"></div>
+          <div class="skeleton-shimmer" style="height:12px; border-radius:4px; width:65%;"></div>
+          <div class="skeleton-shimmer" style="height:12px; border-radius:4px; width:50%;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  @keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+  }
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--theme-border) 25%,
+      color-mix(in srgb, var(--theme-border) 60%, var(--theme-surface)) 50%,
+      var(--theme-border) 75%
+    );
+    background-size: 800px 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+</style>
+
+<script>
+  const MEDIUM_USER  = 'devduchess';
+  const FALLBACK_IMG = 'https://miro.medium.com/v2/resize:fit:1200/format:webp/1*fWmtnvsF2HV6AQSMQNirqg.jpeg';
+
+  async function tryRss2json(count: number) {
+    const url = `https://api.rss2json.com/v1/api.json?count=${count}&rss_url=https://medium.com/feed/@${MEDIUM_USER}`;
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error(`rss2json ${res.status}`);
+    const data = await res.json();
+    console.log('[blog-preview] rss2json:', data.status, data.items?.length ?? 0);
+    if (data.status === 'ok' && data.items?.length) return data.items as any[];
+    throw new Error(data.message ?? 'bad status');
+  }
+
+  async function tryAllOrigins(count: number) {
+    const feed  = `https://medium.com/feed/@${MEDIUM_USER}`;
+    const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(feed)}`;
+    const res   = await fetch(proxy);
+    const env   = await res.json();
+    const xml   = env.contents;
+    if (!xml) throw new Error('empty allorigins');
+    const doc   = new DOMParser().parseFromString(xml, 'text/xml');
+    const nodes = Array.from(doc.querySelectorAll('item')).slice(0, count);
+    console.log('[blog-preview] allorigins XML items:', nodes.length);
+    if (!nodes.length) throw new Error('no items');
+    return nodes.map((item) => {
+      const get  = (tag: string) => item.querySelector(tag)?.textContent?.trim() ?? '';
+      const body = get('encoded') || get('description');
+      const imgM = body.match(/<img[^>]+src=["']([^"']+)["']/);
+      return { title: get('title'), link: get('link') || get('guid'), pubDate: get('pubDate'), thumbnail: imgM?.[1] ?? FALLBACK_IMG, description: body };
+    });
+  }
+
+  function snip(html: string) {
+    return (html ?? '').replace(/<[^>]*>/gm,'').replace(/\s+/g,' ').trim().slice(0,115)+'…';
+  }
+  function fmt(d: string) {
+    try { return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+    catch { return ''; }
+  }
+
+  function makeCard(post: any) {
+    const img  = post.thumbnail || FALLBACK_IMG;
+    const card = document.createElement('a');
+    card.href   = post.link;
+    card.target = '_blank';
+    card.rel    = 'noopener noreferrer';
+    card.style.cssText = 'display:flex;flex-direction:column;border-radius:1rem;overflow:hidden;border:1px solid var(--theme-border);background:var(--theme-surface);text-decoration:none;transition:border-color 0.25s,transform 0.25s;';
+    card.innerHTML = `
+      <div style="aspect-ratio:16/9;overflow:hidden;flex-shrink:0;">
+        <img src="${img}" alt="${post.title}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onerror="this.src='${FALLBACK_IMG}'" />
+      </div>
+      <div style="padding:1.25rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;flex:1;">
+        <span style="font-size:0.7rem;font-family:monospace;color:var(--theme-muted);opacity:0.5;">${fmt(post.pubDate)}</span>
+        <h3 style="font-size:1rem;font-weight:600;color:var(--theme-text);line-height:1.4;margin:0;">${post.title}</h3>
+        <p style="font-size:0.8125rem;color:var(--theme-muted);line-height:1.6;margin:0;flex:1;">${snip(post.description)}</p>
+        <span style="font-size:0.75rem;font-family:monospace;color:var(--theme-accent);margin-top:0.5rem;">Read more ↗</span>
+      </div>`;
+    const img_el = card.querySelector('img') as HTMLImageElement;
+    card.addEventListener('mouseenter', () => {
+      card.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--theme-accent').trim();
+      card.style.transform = 'translateY(-3px)';
+      img_el.style.transform = 'scale(1.04)';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.borderColor = 'var(--theme-border)';
+      card.style.transform = 'translateY(0)';
+      img_el.style.transform = 'scale(1)';
+    });
+    return card;
+  }
+
+  (async () => {
+    const grid = document.getElementById('blog-preview-grid');
+    if (!grid) return;
+
+    let posts: any[] | null = null;
+    try { posts = await tryRss2json(2); } catch (e) { console.warn('[blog-preview] rss2json failed:', e); }
+    if (!posts) {
+      try { posts = await tryAllOrigins(2); } catch (e) { console.warn('[blog-preview] allorigins failed:', e); }
+    }
+
+    // Always clear skeletons
+    grid.innerHTML = '';
+
+    if (!posts) {
+      grid.innerHTML = `
+        <div style="grid-column:1/-1;padding:2.5rem;text-align:center;border-radius:1rem;border:1px solid var(--theme-border);background:var(--theme-surface);">
+          <p style="color:var(--theme-muted);font-family:monospace;font-size:0.875rem;margin:0 0 0.75rem;">Couldn't load posts right now.</p>
+          <a href="https://medium.com/@${MEDIUM_USER}" target="_blank" style="color:var(--theme-accent);font-family:monospace;font-size:0.875rem;text-decoration:none;">Read on Medium ↗</a>
+        </div>`;
+      return;
+    }
+
+    posts.forEach(p => grid.appendChild(makeCard(p)));
+  })();
+</script>

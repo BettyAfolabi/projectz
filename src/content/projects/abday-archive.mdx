@@ -1,0 +1,41 @@
+---
+title: "The Archive: Birthday Exhibition"
+description: "A whimsical interactive booking experience where users schedule 1:1 sessions to 'bore' me with their niche interests, blending playful design with real-time scheduling and data capture."
+featured: true
+year: 2026
+role: "Frontend Engineer & Designer"
+status: "Shipped"
+tags: ["Next.js", "TypeScript", "Tailwind", "Firebase", "Framer Motion", "Calendly"]
+stack: ["Next.js (App Router)", "TypeScript", "Tailwind CSS", "Framer Motion", "Firebase Firestore", "Calendly Embed", "Vercel", "Lucide React"]
+liveUrl: "https://bday-buffet.vercel.app/"
+repoUrl: "https://github.com/BettyAfolabi/b-day-buffet"
+coverImage: "/bdayarchive.png"
+highlights:
+ - "Engineered a custom multi-step booking flow with a 'typewriter' terminal aesthetic using Framer Motion."
+ - "Integrated Firebase Firestore to capture and persist user submissions in real-time with structured schema design"
+ - "Pivoted from third-party Calendly integration to a custom-built availability system via Firebase to bypass cross-origin security restrictions."
+ - "Implemented a 'Ticket Generation' logic that produces a personalized, inductee-style confirmation stub upon successful booking."
+ - "Optimized for mobile-first users in Lagos, ensuring low-latency transitions and high-contrast accessibility."
+metrics:
+ - { label: "Booking Success", value: "12", unit: " / 12" }
+ - { label: "Load Time", value: "0.8", unit: "s" }
+ - { label: "UX Flow Steps", value: "7", unit: "steps" }
+---
+
+## The problem
+
+Traditional scheduling apps like Calendly are functional but "soul-less." For my birthday, I wanted a booking experience that acted as a gatekeeper to an exhibition—something that felt like a terminal from a sci-fi archive rather than a corporate calendar. I also faced technical hurdles when 3rd-party scripts clashed with cross-site cookie policies, threatening the launch.
+
+## What I built
+
+A bespoke booking portal where users are "inductees." The app takes users through a narrative flow, collecting their technical interests (Geek Level) and topics of discussion, culminating in a custom-built slot picker. It features a neo-brutalist "Ticket Stub" success state that users can screenshot as their "Entry Permit."
+
+## Technical decisions
+
+I chose Framer Motion for state-driven transitions because I needed the UI to feel "alive"—as users submit text, the previous question exits and the next slides in with physics-based easing.
+
+Mid-development, I faced a major blocker: Calendly’s embed was rejected in cross-origin contexts due to Stripe’s SameSite cookie policy. I decided to strip the dependency and build a Custom Slot Picker. By defining availability in a local constant and syncing final submissions to a single Firestore document, I eliminated all 3rd-party security errors and reduced the bundle size significantly.
+
+## What I learned
+
+This project taught me the importance of graceful degradation. When the 3rd-party tool failed, I had to quickly architect a custom solution that maintained the UI’s integrity. I also learned that "friction" in UX isn't always bad—by adding deliberate animations and a "Fine Print" modal, I created a sense of exclusivity that a standard form lacks.

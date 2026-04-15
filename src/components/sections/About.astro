@@ -1,0 +1,93 @@
+---
+// About.astro
+---
+
+<section class="mx-auto max-w-7xl px-6 pb-24 reveal-section">
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+
+    <!-- Bio card -->
+    <div class="col-span-1 md:col-span-7 rounded-2xl p-6 md:p-8 flex flex-col gap-6 reveal-item"
+      style="border: 1px solid var(--theme-border); background: var(--theme-surface);">
+
+      <div class="flex flex-col sm:flex-row items-start gap-6">
+        <div class="shrink-0 w-20 h-20 rounded-2xl overflow-hidden"
+          style="border: 1px solid var(--theme-border); background: color-mix(in srgb, var(--theme-accent) 20%, transparent);">
+          <img src="/avatar.jpg" alt="Elizabeth - Frontend Developer" class="w-full h-full object-cover" />
+        </div>
+        <div>
+          <p class="text-sm font-mono mb-1" style="color: var(--theme-accent);">About the developer</p>
+          <h2 class="text-3xl font-bold tracking-tight" style="color: var(--theme-text);">Hi, I'm Elizabeth.</h2>
+        </div>
+      </div>
+
+      <div class="space-y-4 leading-relaxed text-[15px]" style="color: var(--theme-muted);">
+        <p>
+          I'm a frontend developer with 3+ years of experience building responsive,
+          user-focused web applications using React, Next.js, and TypeScript.
+          I enjoy turning complex ideas into clean, intuitive interfaces that people actually enjoy using.
+        </p>
+        <p>
+          I've worked on projects involving API integrations and data visualization,
+          including a weather app that presents real-time data through interactive charts.
+          I've also explored Web3 by integrating wallet functionality during a Solana hackathon,
+          which sparked my interest in building more decentralized and data-driven products.
+        </p>
+        <p>
+          Right now, I'm focused on improving performance, accessibility, and building
+          modern interfaces — especially in AI-powered and data-heavy applications.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mt-auto">
+        {['Lagos, NG', 'Remote', 'React / Next.js / Astro', 'Web3 Enthusiast'].map((badge) => (
+          <span class="text-[10px] uppercase tracking-wider px-3 py-1 rounded-full font-mono"
+            style="border: 1px solid var(--theme-border); background: var(--theme-surface); color: var(--theme-muted);">
+            {badge}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <!-- Availability card — always stays emerald, theme-independent -->
+    <div class="col-span-1 md:col-span-5 rounded-2xl p-6 md:p-8 flex flex-col justify-between gap-8 reveal-item"
+      style="border: 1px solid rgba(52,211,153,0.2); background: rgba(6,78,59,0.15);">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest font-bold">Status: Ready for Impact</span>
+        </div>
+        <p class="text-sm leading-relaxed" style="color: var(--theme-muted);">
+          Open to roles where high-performance UI and scalable architecture meet.
+          Currently exploring the intersection of <span class="text-emerald-300">AI agents</span> and
+          I'm always excited to learn new tools and technologies.
+        </p>
+      </div>
+      <a
+        href="mailto:betty4web@gmail.com"
+        class="group flex items-center justify-between w-full p-4 rounded-xl transition-all"
+        style="background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: rgb(52,211,153);"
+        onmouseover="this.style.background='rgba(52,211,153,0.15)'"
+        onmouseout="this.style.background='rgba(52,211,153,0.08)'"
+      >
+        <span class="font-bold">Let's collaborate</span>
+        <span class="group-hover:translate-x-1 transition-transform">→</span>
+      </a>
+    </div>
+
+    <!-- Stat tiles -->
+    <div class="col-span-1 md:col-span-12 grid grid-cols-1 sm:grid-cols-3 gap-4 reveal-item">
+      {[
+        { value: '3+',   label: 'Years of Frontend'   },
+        { value: 'Ship', label: 'Resilient Code'       },
+        { value: '∞',    label: 'Optimization loops'  },
+      ].map(({ value, label }) => (
+        <div class="rounded-2xl p-6 flex flex-col items-center sm:items-start"
+          style="border: 1px solid var(--theme-border); background: var(--theme-surface);">
+          <span class="text-4xl font-black tracking-tighter" style="color: var(--theme-text);">{value}</span>
+          <span class="text-xs font-mono mt-1 uppercase tracking-tighter" style="color: var(--theme-muted);">{label}</span>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
