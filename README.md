@@ -2,7 +2,7 @@
 
 Personal portfolio and engineering showcase. Built with intentionality, every architectural decision here is deliberate.
 
-🔗 **[elizabeth-afolabi.netlify.app](https://elizabeth-afolabi.netlify.app)**
+🔗 **[devduchess.dev](devduchess.betty4web.workers.dev)**
 
 ---
 
@@ -74,7 +74,7 @@ npm run preview    # preview production build locally
 To regenerate the Lighthouse report:
 
 ```bash
-lighthouse https://elizabeth-afolabi.netlify.app \
+lighthouse https://devduchess.betty4web.workers.dev \
   --output html \
   --output-path ./public/lighthouse.html \
   --chrome-flags="--headless"
@@ -82,4 +82,4 @@ lighthouse https://elizabeth-afolabi.netlify.app \
 
 ---
 
-*v3 — rebuilt from scratch. [See the iteration history](https://elizabeth-afolabi.netlify.app/#iterations) on the site.*
+*v3 — rebuilt from scratch. [See the iteration history](https://devduchess.betty4web.workers.dev/#iterations) on the site.*
