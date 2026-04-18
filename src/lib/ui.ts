@@ -1,4 +1,6 @@
-function initUI() {
+// src/lib/ui.ts
+
+export function initUI() {
   const menu  = document.getElementById('mobile-menu');
   const btn   = document.getElementById('mobile-menu-btn');
   const close = document.getElementById('mobile-menu-close');
@@ -36,7 +38,7 @@ function initUI() {
   });
 }
 
-function initThemeTooltip() {
+export function initThemeTooltip() {
   const STORAGE_KEY = 'portfolio-theme-tooltip-dismissed';
   const wrap = document.getElementById('theme-tooltip-wrap');
 
@@ -49,37 +51,22 @@ function initThemeTooltip() {
     localStorage.setItem(STORAGE_KEY, '1');
   };
 
-  // Already dismissed → remove immediately
   if (localStorage.getItem(STORAGE_KEY)) {
     wrap.remove();
     return;
   }
 
-  // Show after delay
   setTimeout(() => {
     wrap.style.opacity = '1';
     wrap.style.transform = 'translateY(0)';
     wrap.style.pointerEvents = 'auto';
   }, 1800);
 
-  // Button dismiss
   document
     .getElementById('theme-tooltip-dismiss')
     ?.addEventListener('click', dismiss);
 
-  // Auto dismiss on theme change
   document.addEventListener('theme-changed', dismiss, { once: true });
 
-  // Auto dismiss fallback
   setTimeout(dismiss, 8000);
 }
-
-
-function initAll() {
-  initUI();
-  initThemeTooltip();
-}
-
-initAll();
-
-document.addEventListener('astro:page-load', initAll);

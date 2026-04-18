@@ -130,8 +130,16 @@ const commands = buildCommands(projects, posts);
 </html>
 
 <script type="module">
-  import { initUI } from '../../lib/ui';
-  initUI();
+  import { initUI, initThemeTooltip } from '/src/lib/ui.ts';
+
+  const run = () => {
+    initUI();
+    initThemeTooltip();
+  };
+
+  run();
+
+  document.addEventListener('astro:page-load', run);
 </script>
 <script is:inline>
   const revealObserver = new IntersectionObserver(
