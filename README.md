@@ -1,43 +1,85 @@
-# Astro Starter Kit: Minimal
+# Elizabeth Afolabi — Portfolio v3
 
-```sh
-npm create astro@latest -- --template minimal
+Personal portfolio and engineering showcase. Built with intentionality, every architectural decision here is deliberate.
+
+🔗 **[elizabeth-afolabi.netlify.app](https://elizabeth-afolabi.netlify.app)**
+
+---
+
+## Stack
+
+| Layer | Choice | Why |
+|---|---|---|
+| Framework | Astro 5 | Zero-JS by default, content collections, view transitions |
+| Styling | Tailwind CSS v3 | Utility-first, consistent design tokens |
+| Language | TypeScript | Type-safe content schema and component props |
+| Deployment | Cloudflare Pages | Global edge CDN, Workers runtime, automatic deploys from `main` |
+| Blog | Medium RSS | Posts fetched at build time via `fast-xml-parser` |
+
+---
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── islands/        # React islands (CommandPalette, ThemeSwitcher)
+│   ├── layouts/        # BaseLayout.astro
+│   ├── sections/       # Page sections (Hero, Experience, SelectedWork…)
+│   └── ui/             # Reusable primitives (ProjectCard)
+├── content/
+│   ├── projects/       # MDX files — one per project
+│   └── config.ts       # Typed content collection schema
+├── data/
+│   └── commands.ts     # CommandPalette command registry
+├── lib/
+│   ├── medium.ts       # Medium RSS feed fetcher
+│   └── theme.ts        # Theme utilities
+├── pages/
+│   ├── api/            # Cloudflare Worker edge functions
+│   ├── blog/           # Blog index + post routes
+│   ├── projects/       # Project detail pages ([slug].astro)
+│   └── index.astro     # Homepage
+├── scripts/
+│   └── ui.ts           # Client-side reveal + scroll behaviour
+└── styles/
+    └── global.css      # Design tokens, view transitions, reveal system
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+---
 
-## 🚀 Project Structure
+## Architecture Notes
 
-Inside of your Astro project, you'll see the following folders and files:
+**Islands architecture** — interactive components (`CommandPalette`, `ThemeSwitcher`) are React islands hydrated with `client:load`. Everything else is zero-JS static HTML.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+**Content collections** — projects are typed MDX files with a Zod schema. Adding a new project means dropping a `.mdx` file — no code changes required.
+
+**Reveal system** — scroll-triggered animations use a CSS class (`is-visible`) toggled by an `IntersectionObserver` in `scripts/ui.ts`. No animation library dependency.
+
+**Command palette** — `⌘K` opens a full-site search across nav sections, projects, blog posts (fetched from Medium at build time), and quick actions (copy email, download CV).
+
+**Build-time data fetching** — Medium posts are fetched once at build time and inlined into the static output. No client-side fetch on page load.
+
+---
+
+## Local Development
+
+```bash
+npm install
+npm run dev        # http://localhost:4321
+npm run build      # production build → ./dist
+npm run preview    # preview production build locally
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+To regenerate the Lighthouse report:
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```bash
+lighthouse https://elizabeth-afolabi.netlify.app \
+  --output html \
+  --output-path ./public/lighthouse.html \
+  --chrome-flags="--headless"
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
+---
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+*v3 — rebuilt from scratch. [See the iteration history](https://elizabeth-afolabi.netlify.app/#iterations) on the site.*
