@@ -1,59 +1,53 @@
 ---
+// Stack.astro
 const stack = {
-  'Core': [
-    'TypeScript', 'React', 'Next.js', 'Tailwind CSS', 'JavaScript (ES6+)', 'HTML5', 'CSS3',
-  ],
-  'What I Work With': [
-    'REST APIs', 'Firebase', 'Zustand', 'Git', 'Responsive Design', 'Data Visualization',
-  ],
-  'Currently Exploring': [
-    'Web3 (Solana, Wallet Integration)', 'AI APIs', 'Astro', 'Next.js Performance Optimization',
-  ],
-  'Tools': [
-    'VS Code', 'Figma', 'Vercel', 'GitHub', 'Jira',
-  ],
+  Core: ['TypeScript', 'React', 'Next.js', 'Tailwind'],
+  Ecosystem: ['Firebase', 'Zustand', 'REST APIs', 'Git', 'Vercel', 'GitHub', 'Jira'],
+  Exploring: ['AI APIs', 'Astro', 'Web3', 'Performance Optimization']
 };
 ---
 
-<section id="stack" class="reveal-section mx-auto max-w-7xl px-6 pb-20 sm:pb-24 pt-12 sm:pt-16 scroll-mt-20"
-  style="border-top: 1px solid var(--theme-border);">
+<section
+  id="stack"
+  class="mx-auto max-w-7xl px-6 pb-24 pt-16 scroll-mt-20 reveal-section"
+  style="border-top:1px solid var(--theme-border);"
+>
 
-  <p class="reveal-item text-xs font-mono tracking-[0.2em] uppercase mb-2"
-    style="color: var(--theme-accent); opacity: 0.8;">Toolkit</p>
-  <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mb-8 sm:mb-12"
-    style="color: var(--theme-text);">Stack</h2>
+  <!-- Header -->
+  <div class="mb-14 reveal-item">
+    <p class="text-xs font-mono tracking-[0.2em] uppercase mb-3"
+      style="color:var(--theme-accent);opacity:0.8;">
+      Stack
+    </p>
+    <h2 class="text-3xl sm:text-4xl font-bold tracking-tight"
+      style="color:var(--theme-text);">
+      Tools I work with
+    </h2>
+  </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+  <!-- 3 cards ONLY -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 reveal-item">
+
     {Object.entries(stack).map(([category, items]) => (
-      <div class="rounded-2xl p-5 sm:p-6"
-        style="border: 1px solid var(--theme-border); background: var(--theme-surface);">
-        <p class="text-[10px] font-mono uppercase tracking-[0.2em] mb-4 sm:mb-5"
-          style="color: var(--theme-muted); opacity: 0.5;">{category}</p>
-        <ul class="flex flex-wrap gap-2">
-          {items.map((item) => (
-            <li class="item-pill text-xs sm:text-sm px-3 py-1.5 rounded-lg cursor-default transition-all duration-200"
-              style="border: 1px solid var(--theme-border); background: var(--theme-surface); color: var(--theme-muted);">
-              {item}
-            </li>
-          ))}
-        </ul>
+      <div
+        class="rounded-2xl p-6 flex flex-col gap-4 transition-all"
+        style="border:1px solid var(--theme-border); background:var(--theme-surface);"
+      >
+
+        <!-- Title -->
+        <p class="text-xs font-mono uppercase tracking-[0.2em]"
+          style="color:var(--theme-muted);opacity:0.6;">
+          {category}
+        </p>
+
+        <!-- Clean list (NOT pills) -->
+        <p class="text-sm leading-relaxed"
+          style="color:var(--theme-text);">
+          {items.join(' · ')}
+        </p>
+
       </div>
     ))}
+
   </div>
 </section>
-
-<script>
-  document.querySelectorAll<HTMLElement>('.item-pill').forEach((pill) => {
-    pill.addEventListener('mouseenter', () => {
-      const accent = getComputedStyle(document.documentElement).getPropertyValue('--theme-accent').trim();
-      pill.style.borderColor = accent;
-      pill.style.color = getComputedStyle(document.documentElement).getPropertyValue('--theme-text').trim();
-      pill.style.background = `color-mix(in srgb, ${accent} 8%, transparent)`;
-    });
-    pill.addEventListener('mouseleave', () => {
-      pill.style.borderColor = 'var(--theme-border)';
-      pill.style.color = 'var(--theme-muted)';
-      pill.style.background = 'var(--theme-surface)';
-    });
-  });
-</script>

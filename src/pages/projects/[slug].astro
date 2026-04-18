@@ -220,7 +220,7 @@ const s = status ? (statusStyles[status] ?? statusStyles['Archived']) : null;
     <!-- Footer -->
     <div class="mt-16 pt-8 flex justify-between items-center flex-wrap gap-4"
       style="border-top: 1px solid var(--theme-border);">
-      <a href="/"
+      <a href="/#work"
         class="inline-flex items-center gap-2 text-sm font-mono group transition-colors"
         style="color: var(--theme-muted);"
         onmouseover="this.style.color='var(--theme-text)'"
@@ -228,11 +228,20 @@ const s = status ? (statusStyles[status] ?? statusStyles['Archived']) : null;
         <span class="group-hover:-translate-x-0.5 transition-transform inline-block">←</span>
         All projects
       </a>
-      <a href="mailto:betty4web@gmail.com"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all"
-        style="background: var(--theme-accent); color: #fff;"
-        onmouseover="this.style.background='var(--theme-accent-hover)'"
-        onmouseout="this.style.background='var(--theme-accent)'">
+      <a
+        href="mailto:betty4web@gmail.com"
+        class="
+          inline-flex items-center gap-2
+          px-5 py-2.5 rounded-full
+          text-sm font-semibold
+
+          bg-[var(--theme-accent)]
+          text-[var(--theme-bg)]
+
+          hover:bg-[var(--theme-accent-hover)]
+          transition-all duration-200
+        "
+      >
         Work together →
       </a>
     </div>

@@ -1,12 +1,46 @@
 ---
-title: "MultiStep Form"
-description: "A reusable validated multi-stepper form"
-slug: "multi-stepper"
-tags: ["React", "Typescript", "MaterialUI"]
+title: "MultiStep Logic Engine"
+description: "A high-performance, schema-validated form architecture designed for complex data collection and modular UI injection."
+featured: false
+year: 2023
+role: "Frontend Engineer"
+status: "Awarded (2nd Place)"
+tags: ["React", "TypeScript", "MaterialUI", "Yup", "React Hook Form"]
+stack: ["React", "TypeScript", "MaterialUI", "Yup (Validation)", "Context API", "Vite"]
+repoUrl: "https://github.com/BettyAfolabi/multi-step-form"
+liveUrl: "https://validated-step-form.netlify.app/"
 coverImage: "/multi-stepper.png"
-year: 2024
+highlights:
+ - "Engineered a centralized state machine to manage complex multi-step data persistence without parent-component bloating."
+ - "Implemented dynamic schema validation using Yup, allowing for per-step error handling before state progression."
+ - "Developed a modular architecture that allows developers to swap UI components while retaining core validation logic."
+ - "Awarded 2nd position in a regional technical challenge for excellence in documentation and component reusability."
+metrics:
+ - { label: "Type Coverage", value: "100", unit: "%" }
+ - { label: "Payload Accuracy", value: "100", unit: "%" }
+ - { label: "Deployment Rank", value: "2", unit: "nd" }
 ---
 
-# Multi Stepper Form
+## The problem
 
-In today's digital landscape, good user engagement and data collecting are critical in web and app development. For users to have a great experience, a user-friendly method must be built for them to submit their information. I built a reusable form to streamline the process of collecting important data with a stepper interface.
+Standard web forms often fail at scale. When data collection requires more than five inputs, user fatigue sets in, leading to high drop-off rates. At the time, I was mastering **React form patterns** and realized that most "stepper" tutorials lacked a critical element: **Step-Level Validation**. 
+
+I needed to build a system where the "Next" button wasn't just a UI trigger, but a gatekeeper that ensured 100% data integrity before the user could even see the next set of fields.
+
+## What I built
+
+I architected a reusable **MultiStep Logic Engine**. Instead of a hard-coded form, I built a wrapper that handles the "Back/Next" logic, progress tracking, and final payload assembly. It was designed specifically for developers to drop into their projects, providing them with a pre-configured validation loop that works out of the box with **TypeScript** and **MaterialUI**.
+
+This project was submitted to a technical challenge partnered with **Organizely**, where it placed 2nd overall for its clean separation of concerns and technical robustness.
+
+## Technical decisions
+
+The most significant decision was moving validation logic out of the components and into a **Centralized Schema Provider**. 
+
+By using **Yup with TypeScript**, I ensured that the form's state was strictly typed. If a developer tried to collect an "Age" as a string, the compiler would catch it before the app even ran. I also opted for a **Context-based state management** approach over simple props, ensuring that deep-nested form fields could access the global form state without "prop-drilling."
+
+## What I learned
+
+This project was my deep dive into the "hard parts" of TypeScript. Managing generic types for dynamic forms is notoriously difficult, and this build forced me to understand how to align external validation libraries with internal React state. 
+
+I also learned that **reusability is a feature, not an afterthought.** By building this for a community challenge, I had to document the API so clearly that a stranger could use it—a practice that has significantly improved how I write production code today.

@@ -2,21 +2,21 @@
 import BaseLayout from '../components/layout/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
 import About from '../components/sections/About.astro';
+import Experience from '../components/sections/Experience.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
-import BlogPreview from '../components/sections/BlogPreview.astro';
 import StackSection from '../components/sections/StackSection.astro';
 import ContactCTA from '../components/sections/ContactCTA.astro';
 import PerfFooter from '../components/sections/PerfFooter.astro';
 import { getCollection } from 'astro:content';
-
+import PortfolioVersions from '../components/sections/PortfolioVersions.astro';
 const projects = await getCollection('projects');
 ---
-
-<BaseLayout class="gap-8">
+<BaseLayout class="gap-10">
   <Hero />
   <About />
+  <Experience />
   <SelectedWork projects={projects} />
-  <BlogPreview />
+  <PortfolioVersions />
   <StackSection />
   <ContactCTA />
   <PerfFooter />

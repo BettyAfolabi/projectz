@@ -15,15 +15,4 @@ const buildLabel = new Date(buildTime).toLocaleDateString('en-GB', {
       Lighthouse ↗
     </a>
   </div>
-  <span id="edge-region">Edge: —</span>
 </footer>
-
-<script>
-  fetch('/api/region')
-    .then((r) => r.json())
-    .then((d) => {
-      const el = document.getElementById('edge-region');
-      if (el && d.region) el.textContent = `Edge: ${d.region}`;
-    })
-    .catch(() => {});
-</script>

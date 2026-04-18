@@ -23,6 +23,11 @@ const projects = defineCollection({
       value: z.string(),   // e.g. "98"
       unit:  z.string().optional(), // e.g. "/ 100"
     })).optional(),
+    caseStudy: z.object({
+      problem:  z.string(),
+      decision: z.string(),
+      outcome:  z.string(),
+    }).optional(),
   }),
 });
 

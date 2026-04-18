@@ -1,0 +1,182 @@
+---
+// Data first (clean + scalable)
+const roles = [
+{
+    company: 'Checkit',
+    title: 'Frontend Engineer',
+    period: '2025 — Present',
+    type: 'Full-time',
+    badge: 'Current',
+    summary:
+      'Manage frontend development for the Proc360 logistics ecosystem (Admin & User apps). Championed a performance-first architecture by implementing granular Suspense boundaries to prioritize critical UI paths and reduce TTI (Time to Interactive).',
+    highlights: [
+      'Engineered a robust, state-driven tutorial system for the User app, resolving critical race conditions and timeout errors in the onboarding flow.',
+      'Optimized high-density shipment tables using cursor-based pagination and specialized TanStack Query logic to handle deep-scrolling datasets.',
+      'Resolved complex navigation bugs, including recursive redirect loops and stale breadcrumb states, by refactoring routing and global state synchronicity.',
+      'Improved platform responsiveness by refactoring heavy logistical components into memoized, lazy-loaded modules to ensure 60fps interactions.'
+    ],
+    stack: ['Next.js', 'TypeScript', 'React', 'Tailwind CSS', 'TanStack Query', 'Zustand'],
+    featured: true
+  },
+  {
+    company: 'Building Bloques',
+    title: 'Frontend Developer Intern',
+    period: '2024 — 2025',
+    type: 'Internship',
+    summary:
+      'Built responsive interfaces and translated UI/UX designs into production-ready components.',
+    stack: ['React','TypeScript','Tailwind','SCSS']
+  },
+  {
+    company: 'Vechy Graphix',
+    title: 'Frontend Engineer & Lead',
+    period: '2024',
+    type: 'Volunteer',
+    badge: 'Promoted',
+    summary:
+      'Promoted to Frontend Lead within 4 months. Led team and built agro-business web app.',
+    stack: ['React','Next.js','Tailwind']
+  },
+  {
+    company: 'Metis / BuildHer',
+    title: 'DevRel Ambassador',
+    period: '2024',
+    type: 'DevRel',
+    summary:
+      'Led technical session on Metis L2. Created curriculum and delivered teaching session.',
+    link: 'https://youtu.be/1xsjG_1Xwm0?si=E8SLoV1VxohVcg2H',
+    stack: ['Web3','Blockchain','Education']
+  }
+];
+---
+
+<section id="experience" class="mx-auto max-w-7xl px-6 pb-20 md:pb-24 scroll-mt-20 reveal-section">
+
+  <!-- Header -->
+  <div class="mb-14 reveal-item">
+    <p class="text-xs font-mono tracking-[0.2em] uppercase mb-3"
+      style="color:var(--theme-accent);opacity:0.8;">
+      Experience
+    </p>
+    <h2 class="text-3xl sm:text-4xl font-bold tracking-tight"
+      style="color:var(--theme-text);">
+      Experience & Impact
+    </h2>
+  </div>
+
+  <!-- Timeline -->
+  <div class="relative flex flex-col reveal-item">
+
+    <!-- vertical line -->
+    <div class="hidden md:block absolute top-2 bottom-2 left-[9.5rem] w-px"
+      style="background:linear-gradient(
+        to bottom,
+        transparent,
+        color-mix(in srgb, var(--theme-accent) 45%, transparent),
+        transparent
+      );">
+    </div>
+
+    {roles.map((role) => (
+      <div
+        class="grid md:grid-cols-[9rem_1fr] gap-x-10 py-8 border-b"
+        style={`
+            border-color:var(--theme-border);
+            ${role.featured ? 'background:color-mix(in srgb,var(--theme-accent) 4%,transparent);' : ''}
+        `}
+        >
+
+        <!-- meta -->
+        <div class="text-left md:text-right flex md:flex-col gap-3 md:gap-1 text-xs font-mono"
+          style="color:color-mix(in srgb, var(--theme-text) 60%, transparent);">
+          <span>{role.period}</span>
+          <span style="color:color-mix(in srgb,var(--theme-accent) 70%,transparent);">
+            {role.type}
+          </span>
+        </div>
+
+        <!-- body -->
+        <div class="flex flex-col gap-4 relative">
+
+          <!-- timeline dot -->
+          <span class="hidden md:block absolute -left-[2.1rem] top-3 w-2 h-2 rounded-full"
+            style={`
+              background:${role.featured ? 'var(--theme-accent)' : 'color-mix(in srgb,var(--theme-accent) 50%,transparent)'};
+              box-shadow:${role.featured ? '0 0 8px color-mix(in srgb,var(--theme-accent) 60%,transparent)' : 'none'};
+            `}>
+          </span>
+
+          <!-- top -->
+          <div class="flex justify-between items-start gap-4 flex-wrap">
+            <div>
+              <p class="text-xs uppercase tracking-wider mb-1"
+                style="color:var(--theme-muted);opacity:0.6;">
+                {role.company}
+              </p>
+              <h3 class="text-lg font-semibold"
+                style="color:var(--theme-text);">
+                {role.title}
+              </h3>
+            </div>
+
+            {role.badge && (
+              <span class="text-[10px] font-mono px-3 py-1 rounded-full"
+                style="
+                  color:var(--theme-accent);
+                  background:color-mix(in srgb,var(--theme-accent) 10%,transparent);
+                  border:1px solid color-mix(in srgb,var(--theme-accent) 25%,transparent);
+                ">
+                {role.badge}
+              </span>
+            )}
+          </div>
+
+          <!-- summary -->
+          <p class="text-sm leading-relaxed max-w-[60ch]"
+            style="color:var(--theme-muted);">
+            {role.summary}
+          </p>
+
+          <!-- highlights -->
+          {role.highlights && (
+            <ul class="flex flex-col gap-2 text-sm"
+              style="color:var(--theme-muted);">
+              {role.highlights.map((h) => (
+                <li class="pl-4 relative">
+                  <span class="absolute left-0"
+                    style="color:var(--theme-accent);opacity:0.6;">—</span>
+                  {h}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <!-- link -->
+          {role.link && (
+            <a href={role.link} target="_blank"
+              class="text-sm inline-flex items-center gap-1 w-fit"
+              style="color:var(--theme-accent);">
+              Watch session ↗
+            </a>
+          )}
+
+          <!-- stack -->
+          <div class="flex flex-wrap gap-2">
+            {role.stack.map((t) => (
+              <span class="text-[11px] px-2.5 py-1 rounded-md"
+                style="
+                  color:var(--theme-muted);
+                  border:1px solid var(--theme-border);
+                  background:color-mix(in srgb,var(--theme-surface) 80%,transparent);
+                ">
+                {t}
+              </span>
+            ))}
+          </div>
+
+        </div>
+      </div>
+    ))}
+
+  </div>
+</section>

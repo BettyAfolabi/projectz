@@ -32,11 +32,17 @@
 
     <a
       href="mailto:betty4web@gmail.com"
-      id="contact-cta-btn"
-      class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-white font-semibold transition-all duration-200 text-sm"
-      style="background: var(--theme-accent);"
-      onmouseover="this.style.background='var(--theme-accent-hover)'"
-      onmouseout="this.style.background='var(--theme-accent)'"
+      class="
+        inline-flex items-center gap-2
+        px-8 py-3.5 rounded-full
+        text-sm font-semibold
+
+        bg-[var(--theme-accent)]
+        text-[var(--theme-bg)]
+
+        hover:bg-[var(--theme-accent-hover)]
+        transition-all duration-200
+      "
     >
       Say hello →
     </a>

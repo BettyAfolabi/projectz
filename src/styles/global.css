@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ─────────────────────────────────────────────
-   1. THEME TOKENS
+   THEME TOKENS
 ───────────────────────────────────────────── */
 :root {
   --theme-bg:           #080808;
@@ -18,7 +18,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   2. BASE LAYOUT
+   BASE LAYOUT
 ───────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
@@ -39,7 +39,7 @@ body {
 }
 
 /* ─────────────────────────────────────────────
-   3. GSAP INITIAL STATE (no flash)
+  GSAP INITIAL STATE (no flash)
 ───────────────────────────────────────────── */
 .gsap-section,
 .gsap-item {
@@ -47,10 +47,6 @@ body {
   will-change: transform, opacity;
 }
 
-/* ─────────────────────────────────────────────
-   4. REMOVE GLOBAL TRANSITION CONFLICTS
-   (IMPORTANT: no global "all" transitions)
-───────────────────────────────────────────── */
 *, *::before, *::after {
   transition-property: background-color, border-color, color;
   transition-duration: 0.2s;
@@ -63,7 +59,7 @@ body {
 }
 
 /* ─────────────────────────────────────────────
-   5. VIEW TRANSITIONS (CORE SYSTEM)
+   VIEW TRANSITIONS (CORE SYSTEM)
 ───────────────────────────────────────────── */
 
 /* Smooth page fade */
@@ -90,7 +86,7 @@ body {
 }
 
 /* ─────────────────────────────────────────────
-   6. PROJECT CARD ANIMATION (GSAP INSIDE PAGE ONLY)
+  PROJECT CARD ANIMATION (GSAP INSIDE PAGE ONLY)
 ───────────────────────────────────────────── */
 .project-content {
   opacity: 0;
@@ -105,9 +101,6 @@ body {
   }
 }
 
-/* ─────────────────────────────────────────────
-   7. OPTIONAL: REDUCED MOTION SAFETY
-───────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

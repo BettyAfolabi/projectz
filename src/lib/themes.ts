@@ -7,6 +7,7 @@ export interface Theme {
   surface: string;
   border: string;
   accent: string;
+  accentText: string;
   accentHover: string;
   text: string;
   muted: string;
@@ -24,6 +25,7 @@ export const THEMES: Theme[] = [
     surface: 'rgba(255,255,255,0.04)',
     border: 'rgba(255,255,255,0.08)',
     accent: '#5e6ad2',
+    accentText: '#ffffff',
     accentHover: '#818cf8',
     text: '#e0e0ff',
     muted: 'rgba(224,224,255,0.45)',
@@ -39,6 +41,7 @@ export const THEMES: Theme[] = [
     surface: 'rgba(255,255,255,0.06)',
     border: 'rgba(255,255,255,0.1)',
     accent: '#ffffff',
+    accentText: '#000000',
     accentHover: '#aaaaaa',
     text: '#ededed',
     muted: 'rgba(255,255,255,0.4)',
@@ -54,6 +57,7 @@ export const THEMES: Theme[] = [
     surface: 'rgba(0,0,0,0.03)',
     border: '#d0d7de',
     accent: '#0969da',
+    accentText: '#ffffff',
     accentHover: '#0550ae',
     text: '#24292f',
     muted: '#57606a',
@@ -69,6 +73,7 @@ export const THEMES: Theme[] = [
     surface: '#f1f1ef',
     border: '#e3e3e3',
     accent: '#37352f',
+    accentText: '#ffffff',
     accentHover: '#2383e2',
     text: '#37352f',
     muted: '#9b9a97',
@@ -84,6 +89,7 @@ export const THEMES: Theme[] = [
     surface: 'rgba(0,0,0,0.02)',
     border: '#e6e9ef',
     accent: '#635bff',
+    accentText: '#ffffff',
     accentHover: '#4f46e5',
     text: '#0a2540',
     muted: '#8898aa',
@@ -99,6 +105,7 @@ export const THEMES: Theme[] = [
     surface: 'rgba(255,255,255,0.05)',
     border: 'rgba(255,255,255,0.09)',
     accent: '#ff6363',
+    accentText: '#ffffff',
     accentHover: '#ff9f43',
     text: '#f2f2f7',
     muted: 'rgba(242,242,247,0.45)',

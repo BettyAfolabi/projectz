@@ -34,32 +34,6 @@ function initUI() {
       }
     });
   });
-
-  document.querySelectorAll<HTMLAnchorElement>('.nav-anchor').forEach((link) => {
-    link.addEventListener('mouseenter', () => {
-      link.style.background = 'color-mix(in srgb,var(--theme-accent) 10%,transparent)';
-      link.style.color = 'var(--theme-accent)';
-    });
-
-    link.addEventListener('mouseleave', () => {
-      link.style.background = 'transparent';
-      link.style.color = 'var(--theme-nav-text)';
-    });
-
-    link.addEventListener('click', (e) => {
-      const href = link.getAttribute('href') ?? '';
-      if (!href.startsWith('/#')) return;
-
-      const id = href.replace('/#', '');
-      const target = document.getElementById(id);
-
-      if (window.location.pathname === '/' && target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth' });
-        history.pushState(null, '', `#${id}`);
-      }
-    });
-  });
 }
 
 function initThemeTooltip() {

@@ -6,7 +6,7 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title, description, featured, tags = [], coverImage, videoSrc } = project.data;
+const { title, description, featured, tags = [], coverImage, videoSrc, caseStudy } = project.data;
 
 const colSpan = featured
   ? 'col-span-12 md:col-span-8'
@@ -18,105 +18,345 @@ const transitionName = `project-${project.slug}`;
 <a
   href={`/projects/${project.slug}`}
   data-tags={JSON.stringify(tags)}
-  class={`project-card group flex flex-col overflow-hidden rounded-2xl transition-all duration-300 ${colSpan}`}
+  class={`project-card group ${featured ? 'project-card--featured' : ''} flex overflow-hidden rounded-2xl transition-all duration-300 ${colSpan}`}
   style={`view-transition-name: ${transitionName}; border: 1px solid var(--theme-border); background: var(--theme-surface);`}
 >
-  <!-- Image — smaller, 4:3 ratio feels more like a card thumbnail -->
-  <div class="relative w-full overflow-hidden" style="aspect-ratio: 4/3; background: color-mix(in srgb, var(--theme-accent) 6%, var(--theme-surface));">
-    {videoSrc && (
-      <video
-        class="card-video absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500"
-        src={videoSrc} muted loop playsinline preload="none"
-      />
-    )}
-    {coverImage ? (
-      <img
-        src={coverImage}
-        alt={title}
-        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-      />
-    ) : (
-      <div class="w-full h-full flex items-center justify-center">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-          style="color: var(--theme-accent); opacity: 0.25;">
-          <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M3 15l5-5 4 4 3-3 6 6" stroke="currentColor" stroke-width="1.5"
-            stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
-        </svg>
+
+  {featured ? (
+    /* ── FEATURED CARD: horizontal layout with case-study blurb ── */
+    <>
+      {/* Left: image */}
+      <div class="featured-image-wrap">
+        {videoSrc && (
+          <video
+            class="card-video absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500"
+            src={videoSrc} muted loop playsinline preload="none"
+          />
+        )}
+        {coverImage ? (
+          <img
+            src={coverImage}
+            alt={title}
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div class="w-full h-full flex items-center justify-center">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+              style="color: var(--theme-accent); opacity: 0.2;">
+              <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M3 15l5-5 4 4 3-3 6 6" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        )}
+
+        <span class="featured-badge">Featured</span>
       </div>
-    )}
 
-    {featured && (
-      <span class="absolute top-3 left-3 text-[10px] font-mono font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full"
-        style="background: var(--theme-accent); color: #fff;">
-        Featured
-      </span>
-    )}
-  </div>
+      {/* Right: text content */}
+      <div class="featured-content">
+        {tags.length > 0 && (
+          <div class="tag-row">
+            {tags.slice(0, 4).map((tag) => (
+              <span class="tag-pill">{tag}</span>
+            ))}
+            {tags.length > 4 && (
+              <span class="tag-overflow">+{tags.length - 4}</span>
+            )}
+          </div>
+        )}
 
-  <!-- Text below image -->
-  <div class="flex flex-col gap-2.5 p-4">
-    {tags.length > 0 && (
-      <div class="flex flex-wrap gap-1.5">
-        {tags.slice(0, 3).map((tag) => (
-          <span
-            class="tag-pill text-[10px] font-mono px-2 py-0.5 rounded-full cursor-pointer transition-colors"
-            data-tag={tag}
-            style="border: 1px solid var(--theme-border); color: var(--theme-muted);"
-          >{tag}</span>
-        ))}
-        {tags.length > 3 && (
-          <span class="text-[10px] font-mono" style="color: var(--theme-muted); opacity: 0.4;">+{tags.length - 3}</span>
+        <h2 class="card-title">{title}</h2>
+        <p class="card-description">{description}</p>
+
+        {caseStudy && (
+          <div class="case-study">
+            <div class="case-study-item">
+              <span class="case-study-label">Problem</span>
+              <p class="case-study-text">{caseStudy.problem}</p>
+            </div>
+            <div class="case-study-divider" />
+            <div class="case-study-item">
+              <span class="case-study-label">Decision</span>
+              <p class="case-study-text">{caseStudy.decision}</p>
+            </div>
+            <div class="case-study-divider" />
+            <div class="case-study-item">
+              <span class="case-study-label">Outcome</span>
+              <p class="case-study-text">{caseStudy.outcome}</p>
+            </div>
+          </div>
+        )}
+
+        <span class="view-link">
+          View project
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2.5 9.5L9.5 2.5M9.5 2.5H4.5M9.5 2.5V7.5"
+              stroke="currentColor" stroke-width="1.2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+    </>
+  ) : (
+    /* ── SECONDARY CARD: vertical layout (unchanged structure, refined) ── */
+    <div class="secondary-card">
+      <div class="secondary-image-wrap">
+        {videoSrc && (
+          <video
+            class="card-video absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500"
+            src={videoSrc} muted loop playsinline preload="none"
+          />
+        )}
+        {coverImage ? (
+          <img
+            src={coverImage}
+            alt={title}
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div class="w-full h-full flex items-center justify-center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+              style="color: var(--theme-accent); opacity: 0.2;">
+              <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M3 15l5-5 4 4 3-3 6 6" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
         )}
       </div>
-    )}
 
-    <h2 class="text-sm font-semibold tracking-tight leading-snug"
-      style="color: var(--theme-text);">{title}</h2>
-    <p class="text-xs leading-relaxed line-clamp-2"
-      style="color: var(--theme-muted);">{description}</p>
+      <div class="secondary-content">
+        {tags.length > 0 && (
+          <div class="tag-row">
+            {tags.slice(0, 3).map((tag) => (
+              <span class="tag-pill">{tag}</span>
+            ))}
+            {tags.length > 3 && (
+              <span class="tag-overflow">+{tags.length - 3}</span>
+            )}
+          </div>
+        )}
 
-    <span class="text-[11px] font-mono mt-1 opacity-0 group-hover:opacity-100 transition-opacity"
-      style="color: var(--theme-accent);">View project →</span>
-  </div>
+        <h2 class="card-title">{title}</h2>
+        <p class="card-description">{description}</p>
+
+        <span class="view-link">
+          View project
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2.5 9.5L9.5 2.5M9.5 2.5H4.5M9.5 2.5V7.5"
+              stroke="currentColor" stroke-width="1.2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+    </div>
+  )}
 </a>
+
+<style>
+  /* ── Shared ── */
+  .project-card {
+    min-height: 280px;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .tag-pill {
+    font-size: 0.65rem;
+    font-family: monospace;
+    font-weight: 500;
+    color: var(--theme-muted);
+    border: 1px solid var(--theme-border);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+  }
+
+  .tag-overflow {
+    font-size: 0.65rem;
+    font-family: monospace;
+    color: var(--theme-muted);
+    opacity: 0.4;
+    padding: 0.15rem 0;
+  }
+
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    color: var(--theme-text);
+    margin-bottom: 0.4rem;
+  }
+
+  .card-description {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--theme-muted);
+  }
+
+  .view-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    font-family: monospace;
+    color: var(--theme-accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+
+  .project-card:hover .view-link {
+    opacity: 1;
+  }
+
+  /* ── Featured card ── */
+  .project-card--featured {
+    flex-direction: row;
+  }
+
+  .featured-image-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 45%;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--theme-accent) 6%, var(--theme-surface));
+  }
+
+  .featured-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    font-size: 0.6rem;
+    font-family: monospace;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--theme-accent);
+    color: #fff;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+  }
+
+  .featured-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    overflow: hidden;
+  }
+
+  /* Case study blurb */
+  .case-study {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--theme-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .case-study-item {
+    padding: 0.65rem 0.875rem;
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 0.5rem;
+    align-items: baseline;
+  }
+
+  .case-study-divider {
+    height: 1px;
+    background: var(--theme-border);
+  }
+
+  .case-study-label {
+    font-size: 0.65rem;
+    font-family: monospace;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--theme-accent);
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+
+  .case-study-text {
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: var(--theme-muted);
+  }
+
+  /* ── Secondary card ── */
+  .secondary-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .secondary-image-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--theme-accent) 6%, var(--theme-surface));
+  }
+
+  .secondary-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1rem;
+  }
+
+  /* ── Mobile: featured card goes vertical ── */
+  @media (max-width: 768px) {
+    .project-card--featured {
+      flex-direction: column;
+    }
+
+    .featured-image-wrap {
+      width: 100%;
+      aspect-ratio: 16/9;
+    }
+
+    .case-study-item {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+  }
+</style>
 
 <script>
   document.querySelectorAll<HTMLAnchorElement>('.project-card').forEach((card) => {
     const video = card.querySelector<HTMLVideoElement>('.card-video');
 
     if (video) {
-      card.addEventListener('mouseenter', () => { video.play(); video.style.opacity = '0.9'; });
-      card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; video.style.opacity = '0'; });
+      card.addEventListener('mouseenter', () => {
+        video.play();
+        video.style.opacity = '0.9';
+      });
+      card.addEventListener('mouseleave', () => {
+        video.pause();
+        video.currentTime = 0;
+        video.style.opacity = '0';
+      });
     }
 
     card.addEventListener('mouseenter', () => {
-      card.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--theme-accent').trim();
+      card.style.borderColor = getComputedStyle(document.documentElement)
+        .getPropertyValue('--theme-accent').trim();
     });
     card.addEventListener('mouseleave', () => {
       card.style.borderColor = 'var(--theme-border)';
-    });
-
-    card.querySelectorAll<HTMLElement>('.tag-pill').forEach((pill) => {
-      pill.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const tag = pill.dataset.tag!;
-        const url = new URL(window.location.href);
-        url.searchParams.set('tag', tag);
-        window.history.pushState({}, '', url);
-        document.dispatchEvent(new CustomEvent('tag-filter', { detail: tag }));
-      });
-      pill.addEventListener('mouseenter', () => {
-        const a = getComputedStyle(document.documentElement).getPropertyValue('--theme-accent').trim();
-        pill.style.borderColor = a;
-        pill.style.color = a;
-      });
-      pill.addEventListener('mouseleave', () => {
-        pill.style.borderColor = 'var(--theme-border)';
-        pill.style.color = 'var(--theme-muted)';
-      });
     });
   });
 </script>

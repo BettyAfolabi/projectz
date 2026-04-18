@@ -1,0 +1,210 @@
+---
+// src/components/sections/PortfolioVersions.astro
+
+const versions = [
+  {
+    version: 'v1',
+    year: '2023',
+    stack: ['HTML', 'CSS', 'JavaScript'],
+    constraint: 'Proving I could build anything',
+    headline: 'What I didn\'t know yet',
+    reflection: 'A flat list of small projects with no narrative. No component thinking, no performance awareness, no design system — styles scattered everywhere with nothing consistent. It worked, but it didn\'t communicate anything beyond "I wrote some code."',
+    delta: [
+      { label: 'Architecture', value: 'Single files. No separation of concerns.' },
+      { label: 'Performance', value: 'Unoptimised images, no lazy loading, no budgeting.' },
+      { label: 'Design', value: 'No system. Every section styled independently.' },
+    ],
+    screenshot: '/v1-screenshot.png',
+    liveUrl: 'https://firstportfo.netlify.app/',
+    isCurrent: false,
+  },
+  {
+    version: 'v2',
+    year: '2025',
+    stack: ['React', 'Tailwind CSS', 'Framer Motion'],
+    constraint: 'Showing I understood modern tooling',
+    headline: 'What I overcorrected on',
+    reflection: 'Still a project list at its core, but dressed up with React and Framer Motion. I added a blog, an events page, and a scroll-within experience section — but shipped a broken pagination where page 2 loaded at the bottom of the viewport. I knew it was broken. That moment taught me more about UX than any tutorial.',
+    delta: [
+      { label: 'Architecture', value: 'Component-driven, but over-abstracted in places.' },
+      { label: 'Performance', value: 'Framer Motion added JS weight without proportional UX gain.' },
+      { label: 'Design', value: 'More intentional, but motion was decoration not communication.' },
+    ],
+    screenshot: '/v2-screenshot.png', 
+    liveUrl: 'https://elizabeth-afolabi.netlify.app/',        
+    isCurrent: false,
+  },
+  {
+    version: 'v3',
+    year: '2026',
+    stack: ['Astro', 'TypeScript', 'Tailwind CSS'],
+    constraint: 'Communicating engineering maturity',
+    headline: 'What I optimised for',
+    reflection: 'Every decision here was deliberate. Astro for zero-JS by default and static output. Content collections for maintainability. A layout that tells a story rather than listing work. Performance, architecture, and design philosophy aligned for the first time.',
+    delta: [
+      { label: 'Architecture', value: 'Content collections, clear component boundaries, no accidental complexity.' },
+      { label: 'Performance', value: 'Zero-JS default, view transitions, lazy loading throughout.' },
+      { label: 'Design', value: 'System-first — tokens, consistent spacing, motion only where it earns its place.' },
+    ],
+    screenshot: '/v3-screenshot.png',
+    liveUrl: 'https://elizabeth-afolabi.netlify.app',
+    isCurrent: true,
+  },
+];
+---
+
+<section class="max-w-7xl mx-auto px-6 pb-24 reveal-section">
+
+  <!-- Header -->
+  <div class="mb-10 max-w-[52ch] reveal-item">
+    <span class="block text-[0.7rem] font-mono font-medium tracking-[0.15em] uppercase text-accent opacity-80 mb-3">
+      ITERATIONS
+    </span>
+    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-primary leading-snug mb-2">
+      Three versions.{' '}
+      <em class="font-normal italic text-muted">Each one built when I knew more than the last.</em>
+    </h2>
+    <p class="text-[0.85rem] text-muted leading-relaxed">
+      A portfolio isn't just a deliverable — it's a log of how you think. Here's mine.
+    </p>
+  </div>
+
+  <!-- Version cards -->
+  <div class="flex flex-col gap-px bg-theme rounded-2xl border border-theme overflow-hidden reveal-item">
+
+    {versions.map((v, i) => (
+      <article class={`
+        group relative flex flex-col md:flex-row bg-[#080808] transition-colors duration-300
+        hover:bg-white/[0.02]
+        ${v.isCurrent ? 'bg-accent/[0.03]' : ''}
+      `}>
+
+        {/* Left: screenshot column */}
+        <div class="relative md:w-[38%] shrink-0 overflow-hidden bg-accent/[0.04]"
+          style="aspect-ratio: 16/10;">
+          <img
+            src={v.screenshot}
+            alt={`Portfolio ${v.version} screenshot`}
+            class="w-full h-full object-cover object-top transition-all duration-500 saturate-[0.7] group-hover:saturate-100 group-hover:scale-[1.03]"
+            loading="lazy"
+          />
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent to-[#080808]/60 pointer-events-none" />
+
+          {/* Version stamp */}
+          <div class="absolute top-0 left-0 bottom-0 flex items-end p-4 pointer-events-none">
+            <span class="text-[3.5rem] font-black font-mono text-white opacity-[0.08] leading-none tracking-tight select-none" aria-hidden="true">
+              {v.version}
+            </span>
+          </div>
+
+          {v.isCurrent && (
+            <span class="absolute top-3 left-3 text-[0.6rem] font-mono font-bold uppercase tracking-widest bg-accent text-white px-2.5 py-1 rounded-full">
+              Current
+            </span>
+          )}
+        </div>
+
+        {/* Right: content column */}
+        <div class="flex flex-col gap-5 p-6 md:p-8 flex-1 min-w-0">
+
+          {/* Top row: version meta + stack */}
+          <div class="flex items-start justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-3">
+              <span class="text-[0.7rem] font-mono font-medium text-muted opacity-50 tabular-nums">{v.year}</span>
+              <span class="w-px h-3 bg-white/10" aria-hidden="true" />
+              <span class="text-[0.75rem] font-mono font-semibold text-primary/80">{v.version}</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              {v.stack.map((s) => (
+                <span class="text-[0.6rem] font-mono font-medium text-accent/80 bg-accent/10 border border-accent/20 px-2 py-0.5 rounded">
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Constraint label */}
+          <div class="flex items-center gap-2">
+            <span class="text-[0.65rem] font-mono uppercase tracking-widest text-muted opacity-40">Constraint</span>
+            <span class="w-full h-px bg-white/[0.06]" aria-hidden="true" />
+            <span class="text-[0.75rem] font-mono text-muted/70 whitespace-nowrap">{v.constraint}</span>
+          </div>
+
+          {/* Headline + reflection */}
+          <div>
+            <h3 class="text-base font-semibold text-primary tracking-tight mb-2">{v.headline}</h3>
+            <p class="text-[0.82rem] leading-relaxed text-muted">{v.reflection}</p>
+          </div>
+
+          {/* Delta table — the gold */}
+          <div class="border border-white/[0.07] rounded-xl overflow-hidden">
+            <div class="px-4 py-2 border-b border-white/[0.07] bg-white/[0.02]">
+              <span class="text-[0.6rem] font-mono uppercase tracking-widest text-muted opacity-40">The delta</span>
+            </div>
+            {v.delta.map((row, di) => (
+              <div class={`
+                grid gap-3 px-4 py-3
+                ${di < v.delta.length - 1 ? 'border-b border-white/[0.05]' : ''}
+              `} style="grid-template-columns: 6.5rem 1fr;">
+                <span class="text-[0.65rem] font-mono font-semibold uppercase tracking-wider text-accent opacity-60 pt-px">
+                  {row.label}
+                </span>
+                <span class="text-[0.78rem] leading-relaxed text-muted">{row.value}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Live link */}
+          <a
+            href={v.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 w-fit text-[0.72rem] font-mono font-medium text-accent opacity-60 hover:opacity-100 transition-opacity"
+            aria-label={`View ${v.version} live`}
+          >
+            View live
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2.5 9.5L9.5 2.5M9.5 2.5H4.5M9.5 2.5V7.5"
+                stroke="currentColor" stroke-width="1.2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+
+        </div>
+
+        {/* Down arrow connector between cards — not after last */}
+        {i < versions.length - 1 && (
+          <div class="connector absolute -bottom-3.5 left-1/2 -translate-x-1/2 z-10 w-7 h-7 rounded-full border border-theme flex items-center justify-center text-muted opacity-50 md:left-[19%]">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M6 2v8M2 8l4 4 4-4"
+                stroke="currentColor" stroke-width="1.2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        )}
+
+      </article>
+    ))}
+
+  </div>
+
+</section>
+
+<style>
+  /*
+    Two things Tailwind can't express here:
+    1. The connector arrow background must match --theme-bg exactly
+    2. The gap-px background trick needs bg-theme on the wrapper (already a Tailwind class
+       but the value comes from the CSS var, so it's fine — just documenting why)
+  */
+  .connector {
+    background: var(--theme-bg);
+  }
+
+  /* Mobile: screenshot goes full-width, natural aspect ratio */
+  @media (max-width: 768px) {
+    .connector {
+      left: 50%;
+    }
+  }
+</style>

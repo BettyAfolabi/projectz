@@ -6,11 +6,15 @@ import ThemeSwitcher from '../islands/ThemeSwitcher.astro';
 import { getCollection } from 'astro:content';
 import { THEMES_MAP, DEFAULT_THEME_ID } from '../../lib/themes';
 import ThemeTooltip from '../islands/ThemeTooltip.astro';
+import { getMediumPosts } from '../../lib/medium';
+import { buildCommands } from '../../data/commands';
+ 
 const themesJson = JSON.stringify(THEMES_MAP);
 const defaultTheme = DEFAULT_THEME_ID;
 
 const projects = await getCollection('projects');
-const items = projects.map((p) => ({ label: p.data.title, href: `/projects/${p.slug}` }));
+const posts = await getMediumPosts(10).catch(() => []);
+const commands = buildCommands(projects, posts);
 ---
 
 
@@ -39,6 +43,7 @@ const items = projects.map((p) => ({ label: p.data.title, href: `/projects/${p.s
         r.style.setProperty('--theme-muted',        t.muted);
         r.style.setProperty('--theme-nav-text',     t.navText);
         r.style.setProperty('--theme-glow',         t.glow);
+        r.style.setProperty('--theme-accent-text', t.accentText);
         document.body && (document.body.style.backgroundColor = t.bg);
       })();
     </script>
@@ -69,8 +74,8 @@ const items = projects.map((p) => ({ label: p.data.title, href: `/projects/${p.s
       <div class="flex items-center gap-1">
         <div class="hidden md:flex items-center gap-1">
           {[
-            { href:'/#work',    label:'Work'    },
-            { href:'/#blog',    label:'Blog'    },
+            { href:'/#experience',    label:'Work'    },
+            { href:'/blog',    label:'Blog'    },
             { href:'/#stack',   label:'Stack'   },
             { href:'/#contact', label:'Contact' },
           ].map(({ href, label }) => (
@@ -99,12 +104,12 @@ const items = projects.map((p) => ({ label: p.data.title, href: `/projects/${p.s
       <button id="mobile-menu-close" class="absolute top-5 right-6 text-2xl" style="color:var(--theme-nav-text);">✕</button>
       {[
         { href:'/',         label:'Home'    },
-        { href:'/#work',    label:'Work'    },
-        { href:'/#blog',    label:'Blog'    },
+        { href:'/#experience', label:'Work' },
+        { href:'/blog',    label:'Blog'    },
         { href:'/#stack',   label:'Stack'   },
         { href:'/#contact', label:'Contact' },
       ].map(({ href, label }) => (
-        <a href={href} class="drawer-link text-3xl font-black tracking-tighter"
+        <a href={href} class="drawer-link text-3xl tracking-tighter hover:underline"
           style="color:var(--theme-text);">{label}</a>
       ))}
       <a href="mailto:betty4web@gmail.com" class="mt-2 px-6 py-3 rounded-full text-sm font-semibold"
@@ -120,11 +125,11 @@ const items = projects.map((p) => ({ label: p.data.title, href: `/projects/${p.s
     <AvailabilityIsland />
     <ThemeSwitcher />
     <ThemeTooltip />
-    <CommandPalette client:load items={items} />
+    <CommandPalette client:load items={commands} />
   </body>
 </html>
 
-<script type="module" src="/src/scripts/ui.ts"></script>
+<script type="module" src="/src/lib/ui.ts"></script>
 <script is:inline>
   const revealObserver = new IntersectionObserver(
     (entries) => {
