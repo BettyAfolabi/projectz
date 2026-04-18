@@ -129,7 +129,10 @@ const commands = buildCommands(projects, posts);
   </body>
 </html>
 
-<script type="module" src="/src/lib/ui.ts"></script>
+<script type="module">
+  import { initUI } from '../../lib/ui';
+  initUI();
+</script>
 <script is:inline>
   const revealObserver = new IntersectionObserver(
     (entries) => {
