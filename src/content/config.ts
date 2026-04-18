@@ -8,20 +8,20 @@ const projects = defineCollection({
     featured:    z.boolean().default(false),
     tags:        z.array(z.string()).default([]),
     year:        z.number().optional(),
-    role:        z.string().optional(),          // e.g. "Frontend Engineer"
-    status:      z.string().optional(),          // e.g. "Shipped" | "In Progress" | "Archived"
+    role:        z.string().optional(),          
+    status:      z.string().optional(),          
     liveUrl:     z.string().url().optional(),
     repoUrl:     z.string().url().optional(),
     coverImage:  z.string().optional(),
     videoSrc:    z.string().optional(),
 
-    // Engineering metadata
-    stack:       z.array(z.string()).optional(), // tech used specifically on this project
-    highlights:  z.array(z.string()).optional(), // 3-5 bullet engineering wins, e.g. "Reduced bundle size by 40%"
+    
+    stack:       z.array(z.string()).optional(), 
+    highlights:  z.array(z.string()).optional(), 
     metrics:     z.array(z.object({
-      label: z.string(),   // e.g. "Lighthouse Score"
-      value: z.string(),   // e.g. "98"
-      unit:  z.string().optional(), // e.g. "/ 100"
+      label: z.string(),   
+      value: z.string(),   
+      unit:  z.string().optional(), 
     })).optional(),
     caseStudy: z.object({
       problem:  z.string(),
