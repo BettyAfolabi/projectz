@@ -124,10 +124,14 @@ const versions = [
           </div>
 
           {/* Constraint label */}
-          <div class="flex items-center gap-2">
-            <span class="text-[0.65rem] font-mono uppercase tracking-widest text-muted opacity-40">Constraint</span>
-            <span class="w-full h-px bg-white/[0.06]" aria-hidden="true" />
-            <span class="text-[0.75rem] font-mono text-muted/70 whitespace-nowrap">{v.constraint}</span>
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+            <span class="text-[0.65rem] font-mono uppercase tracking-widest text-muted opacity-40">
+              Constraint
+            </span>
+            <span class="hidden sm:block flex-1 h-px bg-white/[0.06]" />
+            <span class="text-[0.75rem] font-mono text-muted/70">
+              {v.constraint}
+            </span>
           </div>
 
           {/* Headline + reflection */}
