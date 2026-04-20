@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import { getMediumPosts, type MediumPost } from '../../lib/medium';
+import { Image } from 'astro:assets';
 
 let posts: MediumPost[] = [];
 
@@ -45,9 +46,14 @@ try {
             style="border:1px solid var(--theme-border); background:var(--theme-surface);"
           >
             <div class="aspect-video overflow-hidden">
-              <img
+              <Image
                 src={post.thumbnail}
                 alt={post.title}
+                width={160}
+                height={160}
+                format="webp"
+                quality={90}
+                loading="lazy"
                 class="w-full h-full object-cover"
               />
             </div>

@@ -1,7 +1,8 @@
 ---
 // About.astro
+import { Image } from 'astro:assets';
+import avatar from '../../../public/avatar.jpg';
 ---
-
 <section class="mx-auto max-w-7xl px-6 pb-24 reveal-section">
   <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
 
@@ -13,95 +14,76 @@
       <div class="flex flex-col sm:flex-row items-start gap-6">
         <div class="shrink-0 w-20 h-20 rounded-2xl overflow-hidden"
           style="border:1px solid var(--theme-border); background:color-mix(in srgb, var(--theme-accent) 20%, transparent);">
-          <img 
-            src="/avatar.jpg" 
-            alt="Elizabeth - Frontend Developer"
-            width="80"
-            height="80"
+          <Image
+            src={avatar}
+            alt="Elizabeth Afolabi, Frontend Engineer"
+            width={160}
+            height={160}
+            format="webp"
+            quality={90}
             fetchpriority="high"
             class="w-full h-full object-cover"
           />
         </div>
-
         <div>
           <p class="text-xs font-mono mb-2 tracking-[0.2em] uppercase"
             style="color:var(--theme-accent); opacity:0.8;">
             About
           </p>
-
-          <h2 class="text-3xl font-bold tracking-tight"
-            style="color:var(--theme-text);">
+          <h2 class="text-3xl font-bold tracking-tight" style="color:var(--theme-text);">
             Hi, I'm Elizabeth.
           </h2>
         </div>
       </div>
 
-      <!-- Copy (trimmed + stronger) -->
-      <div class="space-y-4 text-[15px] leading-relaxed"
-        style="color:var(--theme-muted);">
-
+      <!-- Copy -->
+      <div class="space-y-4 text-[15px] leading-relaxed" style="color:var(--theme-muted);">
         <p>
           I'm a frontend developer with 3+ years of experience building responsive,
-          user-focused applications with React, Next.js, and TypeScript; turning complex ideas into clean, intuitive interfaces.
+          user-focused applications with React, Next.js, and TypeScript — turning complex ideas into clean, intuitive interfaces.
         </p>
-
         <p>
           I've worked on API-driven products and data-heavy interfaces, including real-time dashboards and interactive visualizations. I care deeply about performance, accessibility, and building interfaces that scale with real-world usage.
         </p>
-
       </div>
 
-      <!-- Tags -->
       <div class="flex flex-wrap gap-2 mt-auto">
         {['Lagos, NG', 'Remote', 'React / Next.js / Astro'].map((badge) => (
-          <span class="text-[10px] uppercase tracking-wider px-3 py-1 rounded-full font-mono"
-            style="border:1px solid var(--theme-border); background:var(--theme-surface); color:var(--theme-muted);">
+          <span
+            class="text-[11px] uppercase tracking-wider px-3 py-1 rounded-full font-mono"
+            style="border:1px solid var(--theme-border); background:var(--theme-surface); color:var(--theme-text); opacity:0.75;">
             {badge}
           </span>
         ))}
       </div>
-
     </div>
 
-    <!-- Status card (theme-consistent, not emerald hardcoded) -->
+    <!-- Status card -->
     <div class="md:col-span-5 rounded-2xl p-6 md:p-8 flex flex-col justify-between gap-8 reveal-item"
-      style="
-        border:1px solid var(--theme-border);
-        background:color-mix(in srgb, var(--theme-accent) 10%, var(--theme-surface));
-      ">
-
+      style="border:1px solid var(--theme-border); background:color-mix(in srgb, var(--theme-accent) 10%, var(--theme-surface));">
       <div>
         <div class="flex items-center gap-2 mb-4">
-          <span class="w-2 h-2 rounded-full"
-            style="background:var(--theme-accent);" />
-
-          <span class="text-xs font-mono uppercase tracking-widest font-bold"
-            style="color:var(--theme-accent);">
+          <span class="w-2 h-2 rounded-full" style="background:var(--theme-accent);" aria-hidden="true" />
+          <span class="text-xs font-mono uppercase tracking-widest font-bold" style="color:var(--theme-accent);">
             Available for work
           </span>
         </div>
-
-        <p class="text-sm leading-relaxed"
-          style="color:var(--theme-muted);">
-          Open to frontend roles where performance, usability, and product thinking matter. I enjoy working on data-heavy and user-facing applications.
+        <p class="text-sm leading-relaxed" style="color:var(--theme-muted);">
+          Open to frontend roles where performance, usability, and product thinking matter.
+          I enjoy working on data-heavy and user-facing applications.
         </p>
       </div>
 
       <a
         href="mailto:betty4web@gmail.com"
         class="group flex items-center justify-between w-full p-4 rounded-xl transition-all"
-        style="
-          border:1px solid var(--theme-border);
-          background:var(--theme-surface);
-          color:var(--theme-text);
-        "
+        style="border:1px solid var(--theme-border); background:var(--theme-surface); color:var(--theme-text);"
         onmouseenter="this.style.borderColor='var(--theme-accent)'"
         onmouseleave="this.style.borderColor='var(--theme-border)'"
       >
         <span class="font-semibold">Let's collaborate</span>
-        <span class="group-hover:translate-x-1 transition-transform">→</span>
+        <span class="group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span>
       </a>
-
     </div>
 
   </div>

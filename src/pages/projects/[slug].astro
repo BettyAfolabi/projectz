@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../components/layout/BaseLayout.astro';
+import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -59,7 +60,16 @@ const s = status ? (statusStyles[status] ?? statusStyles['Archived']) : null;
     >
       {coverImage && (
         <div class="w-full h-56 md:h-72 overflow-hidden">
-          <img src={coverImage} alt={title} class="w-full h-full object-cover opacity-85" />
+          <Image
+            src={coverImage}
+            alt={title} 
+            width={160}
+            height={160}
+            format="webp"
+            quality={90}
+            loading="lazy"
+            class="w-full h-full object-cover opacity-85"
+          />
         </div>
       )}
 

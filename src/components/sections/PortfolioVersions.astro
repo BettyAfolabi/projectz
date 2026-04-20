@@ -1,5 +1,6 @@
 ---
 // src/components/sections/PortfolioVersions.astro
+import { Image } from "astro:assets";
 
 const versions = [
   {
@@ -82,11 +83,15 @@ const versions = [
         {/* Left: screenshot column */}
         <div class="relative md:w-[38%] shrink-0 overflow-hidden bg-accent/[0.04]"
           style="aspect-ratio: 16/10;">
-          <img
+          <Image
             src={v.screenshot}
             alt={`Portfolio ${v.version} screenshot`}
-            class="w-full h-full object-cover object-top transition-all duration-500 saturate-[0.7] group-hover:saturate-100 group-hover:scale-[1.03]"
+            width={160}
+            height={160}
+            format="webp"
+            quality={90}
             loading="lazy"
+            class="w-full h-full object-cover object-top transition-all duration-500 saturate-[0.7] group-hover:saturate-100 group-hover:scale-[1.03]"
           />
           <div class="absolute inset-0 bg-gradient-to-r from-transparent to-[#080808]/60 pointer-events-none" />
 
