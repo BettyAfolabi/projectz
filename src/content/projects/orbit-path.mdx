@@ -1,0 +1,49 @@
+---
+title: "OrbitPath: Space Career Pathfinder"
+description: "A two-part space application. Live Artemis mission dashboard with a 3D ISS tracker, paired with an AI-powered career pathfinder that generates personalised roadmaps into the space industry."
+featured: true
+year: 2026
+role: "Full Stack Engineer & Designer"
+status: "Shipped"
+tags: ["Next.js", "TypeScript", "Tailwind", "Groq", "Supabase", "Framer Motion", "Three.js"]
+stack: ["Next.js 15 (App Router)", "TypeScript", "Tailwind CSS v4", "Framer Motion", "globe.gl + Three.js", "Groq API", "Supabase (PostgreSQL)", "Vercel"]
+liveUrl: "https://orbitpath.vercel.app/"
+repoUrl: "https://github.com/BettyAfolabi/orbitpath"
+coverImage: "/orbit-path.png"
+highlights:
+  - "Engineered a live ISS tracker on a 3D interactive globe using globe.gl and Three.js, polling the wheretheiss.at API every 5 seconds."
+  - "Built a 5-step quiz-to-roadmap pipeline: user answers are passed to a Next.js server action that calls Groq, which returns a structured JSON roadmap persisted to Supabase."
+  - "Implemented a data labeling feedback loop where users rate each AI recommendation — every label is stored as a training signal for future model improvement."
+  - "Switched from Gemini to Groq mid-build to stay within free-tier limits without sacrificing response quality or latency."
+  - "Designed individual Artemis II crew profile pages with slugs, bios, and mission context — blending real NASA data with a cinematic dark-space aesthetic."
+caseStudy:
+  problem: "The space industry is growing faster than most people realise, but the entry point is invisible. First-time explorers have no structured way to go from 'I'm interested' to 'here's my actual path in.'"
+  decision: "Paired the AI roadmap (the utility) with a live mission dashboard (the emotional hook) — so the app earns trust before asking for input. Swapped Gemini for Groq after hitting free-tier limits during development, preserving the zero-cost constraint."
+  outcome: "A full-stack AI application with a functioning labeling loop, live ISS data, and a personalised roadmap generation flow — submitted as an MLH Fellowship project."
+metrics:
+  - { label: "Quiz Steps", value: "5", unit: " steps" }
+  - { label: "ISS Poll Rate", value: "5", unit: "s" }
+  - { label: "AI Provider", value: "Groq", unit: " (free tier)" }
+---
+
+## The problem
+
+Most people who want to work in space don't know where to start. There's no clear curriculum, no obvious first step, just a vague sense that it's probably not for them. I wanted to build the tool that should have existed years ago: something that takes your actual background and tells you, concretely, what to do next.
+
+## What I built
+
+OrbitPath has two connected layers. The first is a live Artemis mission dashboard. A cinematic entry point with a 3D globe tracking the ISS in real time, Artemis II crew profiles, and a mission timeline. The second is the hero feature: a 5-step career pathfinder quiz that feeds your answers to Groq, which generates a structured, multi-phase roadmap personalised to your skills, interests, and goals.
+
+Every roadmap is saved to Supabase. Every recommendation on the roadmap can be rated by the user; thumbs up/down and a 1–5 star score. Those labels are stored as a dataset. The long-term vision is a fine-tuned model trained on what real aspiring space professionals found useful.
+
+## Technical decisions
+
+The 3D globe was the biggest technical risk, so I tackled it on Day 2. `globe.gl` wraps Three.js with a clean API for spherical rendering — the ISS position is fetched from `wheretheiss.at` every 5 seconds via a `useISSPosition` hook and plotted as a live marker on the globe surface.
+
+Midway through development I switched from Gemini to Groq. Both offer free tiers, but Groq's rate limits were more workable for the rapid iteration I needed during build week. The server action in `app/pathfinder/actions.ts` handles the API call server-side, so the key never touches the client.
+
+The data labeling loop was an intentional design decision, not an afterthought. Each `RecommendationCard` exposes a `LabelingWidget` — the rating is written to a `labels` table in Supabase with a foreign key back to the `roadmaps` row. Even at zero users, the schema is ready to collect signal the moment anyone uses it.
+
+## What I learned
+
+Scoping an 8-day project is its own skill. The ISS globe took longer than expected; the crew profile pages took less. Shipping something real inside a tight constraint forced cleaner decisions, if a feature didn't serve the hero flow, it got cut or deferred. On the AI side, I learned how to structure prompts to get consistently formatted, useful output from a language model and how to handle that response in a server action. With Supabase, I went beyond basic data storage. I designed a lightweight feedback loop where quiz inputs, generated roadmaps, and user ratings are all saved together as labeled records. This means every interaction produces a structured data point that could be used to evaluate or fine-tune AI recommendations over time, which gave me a practical introduction to how real-world AI products close the gap between model output and user value.

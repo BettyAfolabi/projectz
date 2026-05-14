@@ -13,6 +13,7 @@ export interface Theme {
   muted: string;
   navText: string;
   glow: string;
+  colorScheme: 'only dark' | 'only light';
 }
 
 export const THEMES: Theme[] = [
@@ -31,6 +32,7 @@ export const THEMES: Theme[] = [
     muted: 'rgba(224,224,255,0.45)',
     navText: 'rgba(224,224,255,0.7)',
     glow: 'rgba(94,106,210,0.12)',
+    colorScheme: 'only dark',
   },
   {
     id: 'vercel',
@@ -47,6 +49,7 @@ export const THEMES: Theme[] = [
     muted: 'rgba(255,255,255,0.4)',
     navText: 'rgba(255,255,255,0.6)',
     glow: 'transparent',
+    colorScheme: 'only dark',
   },
   {
     id: 'github',
@@ -63,6 +66,7 @@ export const THEMES: Theme[] = [
     muted: '#57606a',
     navText: '#57606a',
     glow: 'transparent',
+    colorScheme: 'only light'
   },
   {
     id: 'notion',
@@ -79,6 +83,7 @@ export const THEMES: Theme[] = [
     muted: '#9b9a97',
     navText: '#6b6b6b',
     glow: 'transparent',
+    colorScheme: 'only light'
   },
   {
     id: 'stripe',
@@ -95,6 +100,7 @@ export const THEMES: Theme[] = [
     muted: '#8898aa',
     navText: '#425466',
     glow: 'rgba(99,91,255,0.08)',
+    colorScheme: 'only light'
   },
   {
     id: 'raycast',
@@ -111,6 +117,7 @@ export const THEMES: Theme[] = [
     muted: 'rgba(242,242,247,0.45)',
     navText: 'rgba(242,242,247,0.65)',
     glow: 'rgba(255,99,99,0.1)',
+    colorScheme: 'only dark',
   },
 ];
 

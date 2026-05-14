@@ -22,6 +22,7 @@ const commands = buildCommands(projects, posts);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Frontend Engineer — building fast, accessible, obsessively detailed interfaces." />
+    <meta name="color-scheme" content="dark light" />
     <title>Elizabeth — Frontend Engineer</title>
     <link rel="icon" href="/favicon.ico" />
 
@@ -43,6 +44,7 @@ const commands = buildCommands(projects, posts);
         r.style.setProperty('--theme-nav-text',     t.navText);
         r.style.setProperty('--theme-glow',         t.glow);
         r.style.setProperty('--theme-accent-text', t.accentText);
+        r.style.colorScheme = t.colorScheme; 
         document.body && (document.body.style.backgroundColor = t.bg);
       })();
     </script>

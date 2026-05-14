@@ -5,7 +5,8 @@
 /* ─────────────────────────────────────────────
    THEME TOKENS
 ───────────────────────────────────────────── */
-:root {
+:root {         
+  forced-color-adjust: none;
   --theme-bg:           #080808;
   --theme-surface:      rgba(255,255,255,0.03);
   --theme-border:       rgba(255,255,255,0.08);

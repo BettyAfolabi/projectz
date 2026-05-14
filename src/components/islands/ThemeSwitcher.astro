@@ -99,6 +99,7 @@
     r.style.setProperty('--theme-muted',        t.muted);
     r.style.setProperty('--theme-nav-text',     t.navText);
     r.style.setProperty('--theme-glow',         t.glow);
+    r.style.colorScheme = t.colorScheme;
     document.body.style.backgroundColor = t.bg;
     document.body.style.color = t.text;
     localStorage.setItem('portfolio-theme', t.id);
